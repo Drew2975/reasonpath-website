@@ -1,0 +1,49 @@
+name: Merge Coordinator
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_branch:
+        description: 'Branch to merge FROM (e.g., work/claude-security-20250827)'
+        required: true
+      target_branch:
+        description: 'Branch to merge TO'
+        required: true
+        default: 'master'
+
+jobs:
+  coordinate-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          
+      - name: Attempt Merge
+        id: merge
+        run: |
+          git fetch --all
+          git checkout ${{ github.event.inputs.target_branch }}
+          git pull origin ${{ github.event.inputs.target_branch }}
+          
+          if git merge origin/${{ github.event.inputs.source_branch }} --no-ff -m "Merge ${{ github.event.inputs.source_branch }} into ${{ github.event.inputs.target_branch }}"; then
+            echo "merge_status=success" >> $GITHUB_OUTPUT
+            git push origin ${{ github.event.inputs.target_branch }}
+          else
+            echo "merge_status=conflict" >> $GITHUB_OUTPUT
+            git merge --abort
+          fi
+          
+      - name: Report Status
+        if: always()
+        run: |
+          if [ "${{ steps.merge.outputs.merge_status }}" == "success" ]; then
+            echo "Merge successful!"
+          else
+            echo "Merge conflict detected. Manual intervention required."
+          fi

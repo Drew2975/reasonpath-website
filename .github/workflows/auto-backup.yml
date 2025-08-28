@@ -1,0 +1,28 @@
+name: Automated Backup
+
+on:
+  push:
+    branches: ['work/*', 'master']
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          
+      - name: Create Backup Branch
+        run: |
+          BACKUP_BRANCH="backup/$(date +%Y%m%d-%H%M)"
+          git checkout -b $BACKUP_BRANCH
+          git push origin $BACKUP_BRANCH
+          echo "Backup created: $BACKUP_BRANCH"
