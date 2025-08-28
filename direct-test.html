@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct Lottie Test</title>
+    <link rel="stylesheet" href="assets/css/hero-lottie.css">
+</head>
+<body>
+    <section class="hero-section">
+        <div class="hero-canvas">
+            <div id="lottie-base"></div>
+            <div id="lottie-struct"></div>
+        </div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">Direct Test</h1>
+            <p class="hero-subtitle">Testing Lottie directly...</p>
+        </div>
+        
+        <button class="reveal-toggle" onclick="testReveal()">
+            Test Reveal
+        </button>
+    </section>
+
+    <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
+    <script>
+        console.log('Starting direct test...');
+        
+        setTimeout(async () => {
+            console.log('Lottie available:', typeof window.lottie);
+            console.log('Base container:', document.getElementById('lottie-base'));
+            console.log('Struct container:', document.getElementById('lottie-struct'));
+            
+            if (window.lottie) {
+                try {
+                    // Load the JSON directly
+                    const response = await fetch('assets/lottie/hero-glassbox.json');
+                    const animData = await response.json();
+                    console.log('Animation data loaded:', animData.layers.length, 'layers');
+                    
+                    // Create animation
+                    const animation = window.lottie.loadAnimation({
+                        container: document.getElementById('lottie-base'),
+                        renderer: 'svg',
+                        loop: true,
+                        autoplay: true,
+                        animationData: animData
+                    });
+                    
+                    console.log('Animation created:', animation);
+                    
+                    setTimeout(() => {
+                        const svg = document.querySelector('#lottie-base svg');
+                        console.log('SVG in DOM:', !!svg);
+                        if (svg) {
+                            console.log('SVG dimensions:', svg.getAttribute('width'), 'x', svg.getAttribute('height'));
+                        }
+                    }, 1000);
+                    
+                } catch (error) {
+                    console.error('Animation creation failed:', error);
+                }
+            } else {
+                console.error('Lottie not available');
+            }
+        }, 2000);
+        
+        function testReveal() {
+            const struct = document.getElementById('lottie-struct');
+            struct.style.setProperty('--mr', '200px');
+            console.log('Reveal test triggered');
+        }
+    </script>
+</body>
+</html>

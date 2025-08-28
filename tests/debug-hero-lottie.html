@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReasonPath Hero Lottie Debug</title>
+    <link rel="stylesheet" href="../assets/css/hero-lottie.css">
+    <style>
+        body { margin: 0; font-family: system-ui; background: #f8f9fa; }
+        .debug-panel {
+            position: fixed; top: 10px; left: 10px; right: 10px;
+            background: rgba(0,0,0,0.9); color: #00ff00; padding: 15px;
+            border-radius: 8px; font-family: 'Courier New', monospace; font-size: 11px;
+            z-index: 2000; max-height: 200px; overflow-y: auto;
+        }
+        .debug-log { margin: 2px 0; }
+        .error { color: #ff4444; }
+        .success { color: #44ff44; }
+        .warning { color: #ffaa44; }
+        .test-controls {
+            position: fixed; bottom: 10px; right: 10px;
+            background: rgba(255,255,255,0.95); padding: 15px;
+            border-radius: 8px; z-index: 2000;
+        }
+        .test-controls button {
+            display: block; width: 100%; margin: 5px 0; padding: 8px;
+            border: 1px solid #ddd; border-radius: 4px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-panel">
+        <h4>🔍 Debug Console</h4>
+        <div id="debug-log"></div>
+    </div>
+    
+    <div class="test-controls">
+        <h4>Debug Tests</h4>
+        <button onclick="testFileAccess()">Test File Access</button>
+        <button onclick="testLottieLibrary()">Test Lottie Library</button>
+        <button onclick="testAnimationLoad()">Test Animation Load</button>
+        <button onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <section class="hero-section">
+        <div class="hero-canvas">
+            <div id="lottie-base"></div>
+            <div id="lottie-struct"></div>
+        </div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">Debug Mode Active</h1>
+            <p class="hero-subtitle">Testing Lottie animation loading...</p>
+        </div>
+        
+        <button class="reveal-toggle" aria-pressed="false">
+            Debug Structure
+        </button>
+    </section>
+
+    <script>
+        // Enhanced debugging system
+        const debugLog = document.getElementById('debug-log');
+        let logCount = 0;
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.className = `debug-log ${type}`;
+            div.innerHTML = `[${timestamp}] ${message}`;
+            debugLog.appendChild(div);
+            debugLog.scrollTop = debugLog.scrollHeight;
+            
+            // Also log to console
+            console.log(`[DEBUG ${type.toUpperCase()}] ${message}`);
+            
+            if (++logCount > 50) {
+                debugLog.removeChild(debugLog.firstChild);
+                logCount--;
+            }
+        }
+
+        function clearLog() {
+            debugLog.innerHTML = '';
+            logCount = 0;
+        }
+
+        // Test file access
+        async function testFileAccess() {
+            log('🔍 Testing file access...', 'info');
+            
+            const files = [
+                '../assets/lottie/hero-glassbox.json',
+                '../assets/lottie/hero-structure.json',
+                '/assets/lottie/hero-glassbox.json',
+                '/assets/lottie/hero-structure.json'
+            ];
+            
+            for (const file of files) {
+                try {
+                    log(`📁 Trying: ${file}`, 'info');
+                    const response = await fetch(file);
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        log(`✅ SUCCESS: ${file} (${data.layers?.length || 0} layers)`, 'success');
+                        return file; // Return successful path
+                    } else {
+                        log(`❌ FAILED: ${file} - ${response.status} ${response.statusText}`, 'error');
+                    }
+                } catch (error) {
+                    log(`❌ ERROR: ${file} - ${error.message}`, 'error');
+                }
+            }
+        }
+
+        // Test Lottie library loading
+        async function testLottieLibrary() {
+            log('📦 Testing Lottie library...', 'info');
+            
+            try {
+                const { default: lottie } = await import('https://unpkg.com/lottie-web/build/player/lottie_light.min.js');
+                log(`✅ Lottie library loaded: v${lottie.version || 'unknown'}`, 'success');
+                return lottie;
+            } catch (error) {
+                log(`❌ Lottie library failed: ${error.message}`, 'error');
+                return null;
+            }
+        }
+
+        // Test full animation loading
+        async function testAnimationLoad() {
+            log('🎬 Testing full animation load...', 'info');
+            
+            const lottie = await testLottieLibrary();
+            if (!lottie) return;
+            
+            const filePath = await testFileAccess();
+            if (!filePath) return;
+            
+            try {
+                const animationData = await fetch(filePath).then(r => r.json());
+                log(`📊 Animation data: ${JSON.stringify({
+                    version: animationData.v,
+                    fps: animationData.fr,
+                    duration: animationData.op,
+                    layers: animationData.layers?.length
+                })}`, 'info');
+                
+                const container = document.getElementById('lottie-base');
+                if (!container) {
+                    log('❌ Container #lottie-base not found', 'error');
+                    return;
+                }
+                
+                const animation = lottie.loadAnimation({
+                    container: container,
+                    renderer: 'svg',
+                    loop: true,
+                    autoplay: true,
+                    animationData: animationData
+                });
+                
+                animation.addEventListener('complete', () => {
+                    log('✅ Animation loaded and playing!', 'success');
+                });
+                
+                animation.addEventListener('error', (error) => {
+                    log(`❌ Animation error: ${error}`, 'error');
+                });
+                
+                log('🎯 Animation loading initiated...', 'info');
+                
+            } catch (error) {
+                log(`❌ Animation load failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Enhanced performance tracking
+        class DebugController {
+            constructor() {
+                this.startTime = performance.now();
+                this.log('🚀 Debug controller initialized');
+            }
+            
+            log(message) {
+                const elapsed = (performance.now() - this.startTime).toFixed(1);
+                log(`[${elapsed}ms] ${message}`, 'info');
+            }
+            
+            async init() {
+                this.log('Starting diagnostics...');
+                
+                // Test each component
+                await this.testEnvironment();
+                await this.testFiles();
+                await this.testLottie();
+            }
+            
+            async testEnvironment() {
+                this.log(`Browser: ${navigator.userAgent.split(' ').pop()}`);
+                this.log(`Connection: ${navigator.connection?.effectiveType || 'unknown'}`);
+                this.log(`Location: ${window.location.href}`);
+            }
+            
+            async testFiles() {
+                this.log('Testing file paths...');
+                await testFileAccess();
+            }
+            
+            async testLottie() {
+                this.log('Testing Lottie integration...');
+                await testAnimationLoad();
+            }
+        }
+
+        // Auto-run diagnostics
+        window.addEventListener('DOMContentLoaded', () => {
+            const controller = new DebugController();
+            controller.init();
+        });
+
+        // Manual structure test
+        document.querySelector('.reveal-toggle')?.addEventListener('click', (e) => {
+            const button = e.target;
+            const pressed = button.getAttribute('aria-pressed') === 'true';
+            button.setAttribute('aria-pressed', String(!pressed));
+            
+            const struct = document.getElementById('lottie-struct');
+            if (struct) {
+                struct.style.setProperty('--mx', '50%');
+                struct.style.setProperty('--my', '50%');
+                struct.style.setProperty('--mr', pressed ? '0px' : '180px');
+                log(`🎛️ Structure toggle: ${pressed ? 'OFF' : 'ON'}`, 'info');
+            } else {
+                log('❌ Structure element not found', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

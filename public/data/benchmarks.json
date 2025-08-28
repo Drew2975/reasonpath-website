@@ -1,0 +1,198 @@
+{
+  "benchmarks": {
+    "reading-comprehension": {
+      "id": "reading-comprehension",
+      "title": "Reading Comprehension Analysis",
+      "description": "Boundary testing for text understanding and interpretation accuracy across various complexity levels",
+      "category": "Language Understanding",
+      "metadata": {
+        "primaryResearcher": "Claude",
+        "validators": ["ChatGPT", "Gemini"],
+        "testingPeriod": "March 1-18, 2025",
+        "totalTests": 847,
+        "edgeCasesIdentified": 23,
+        "lastUpdated": "2025-03-18"
+      },
+      "results": [
+        {
+          "testCategory": "Simple Passages (500 words)",
+          "claude": {"score": 94, "rating": "excellent"},
+          "chatgpt": {"score": 91, "rating": "excellent"}, 
+          "gemini": {"score": 87, "rating": "good"},
+          "edgeCaseFailureRate": {"score": 8, "rating": "good"}
+        },
+        {
+          "testCategory": "Complex Academic Text (2000+ words)",
+          "claude": {"score": 78, "rating": "good"},
+          "chatgpt": {"score": 82, "rating": "good"},
+          "gemini": {"score": 71, "rating": "fair"},
+          "edgeCaseFailureRate": {"score": 23, "rating": "fair"}
+        },
+        {
+          "testCategory": "Technical Documentation", 
+          "claude": {"score": 65, "rating": "fair"},
+          "chatgpt": {"score": 74, "rating": "good"},
+          "gemini": {"score": 68, "rating": "fair"},
+          "edgeCaseFailureRate": {"score": 31, "rating": "fair"}
+        },
+        {
+          "testCategory": "Ambiguous Context",
+          "claude": {"score": 52, "rating": "fair"},
+          "chatgpt": {"score": 48, "rating": "poor"},
+          "gemini": {"score": 44, "rating": "poor"},
+          "edgeCaseFailureRate": {"score": 58, "rating": "poor"}
+        },
+        {
+          "testCategory": "Multiple Conflicting Sources",
+          "claude": {"score": 39, "rating": "poor"},
+          "chatgpt": {"score": 42, "rating": "poor"},
+          "gemini": {"score": 35, "rating": "poor"},
+          "edgeCaseFailureRate": {"score": 67, "rating": "poor"}
+        }
+      ],
+      "keyLimitations": [
+        {
+          "title": "Critical Boundary: Conflicting Information Processing",
+          "description": "All models show significant degradation when processing conflicting information from multiple sources. Accuracy drops below 50% when asked to reconcile contradictory claims, with Claude performing marginally better at 39% vs Gemini's 35%.",
+          "severity": "critical"
+        },
+        {
+          "title": "Context Length Dependency", 
+          "description": "Performance inversely correlates with text length. Beyond 2000 words, all models show 15-25% accuracy degradation, particularly when key information is distributed across large sections.",
+          "severity": "moderate"
+        }
+      ],
+      "methodology": {
+        "approach": "Tests conducted using curated academic papers, technical documentation, and artificially constructed ambiguous passages. Each model tested on identical prompts with consistent evaluation criteria.",
+        "toolsUsed": ["Academic database access", "Technical documentation corpus", "Ambiguity generation framework"],
+        "evaluationCriteria": "Factual accuracy, reasoning coherence, source attribution, edge case handling"
+      },
+      "practicalImplications": {
+        "recommendedUse": [
+          "Simple to moderately complex single-source documents",
+          "Factual extraction from clear, unambiguous text"
+        ],
+        "avoidFor": [
+          "Multi-source reconciliation",
+          "Highly ambiguous contexts", 
+          "Documents with conflicting information"
+        ],
+        "mitigationStrategies": [
+          "Break complex documents into smaller sections",
+          "Provide explicit source hierarchies",
+          "Flag ambiguous content for human review"
+        ]
+      }
+    },
+    "semantic-reasoning": {
+      "id": "semantic-reasoning",
+      "title": "Semantic Reasoning Limitations",
+      "description": "Understanding meaning, context, and implicit relationships in language",
+      "category": "Language Understanding",
+      "metadata": {
+        "primaryResearcher": "Gemini",
+        "validators": ["Claude", "ChatGPT"],
+        "testingPeriod": "March 5-15, 2025",
+        "totalTests": 621,
+        "edgeCasesIdentified": 31,
+        "lastUpdated": "2025-03-15"
+      },
+      "results": [
+        {
+          "testCategory": "Causal Relationships",
+          "claude": {"score": 83, "rating": "good"},
+          "chatgpt": {"score": 79, "rating": "good"},
+          "gemini": {"score": 76, "rating": "good"},
+          "commonFailures": "Correlation vs causation confusion"
+        },
+        {
+          "testCategory": "Implicit Context",
+          "claude": {"score": 67, "rating": "fair"},
+          "chatgpt": {"score": 71, "rating": "good"},
+          "gemini": {"score": 63, "rating": "fair"},
+          "commonFailures": "Missing cultural assumptions"
+        },
+        {
+          "testCategory": "Sarcasm Detection",
+          "claude": {"score": 43, "rating": "poor"},
+          "chatgpt": {"score": 39, "rating": "poor"},
+          "gemini": {"score": 47, "rating": "poor"},
+          "commonFailures": "Context-dependent failures"
+        }
+      ],
+      "keyLimitations": [
+        {
+          "title": "Cultural Context Blind Spots",
+          "description": "All models struggle with cultural context outside their training data. Performance drops significantly for non-Western cultural references and region-specific implicit knowledge.",
+          "severity": "critical"
+        }
+      ]
+    },
+    "arithmetic-operations": {
+      "id": "arithmetic-operations", 
+      "title": "Mathematical Operations Analysis",
+      "description": "Precision and accuracy limits in mathematical calculations",
+      "category": "Mathematical Reasoning",
+      "metadata": {
+        "primaryResearcher": "ChatGPT",
+        "validators": ["Claude", "Gemini"],
+        "testingPeriod": "March 10-17, 2025",
+        "totalTests": 1203,
+        "edgeCasesIdentified": 56,
+        "lastUpdated": "2025-03-17"
+      },
+      "results": [
+        {
+          "testCategory": "Basic Arithmetic (±×÷)",
+          "claude": {"score": 99, "rating": "excellent"},
+          "chatgpt": {"score": 97, "rating": "excellent"},
+          "gemini": {"score": 98, "rating": "excellent"},
+          "failureThreshold": "15+ digit numbers"
+        },
+        {
+          "testCategory": "Multi-step Calculations",
+          "claude": {"score": 86, "rating": "good"},
+          "chatgpt": {"score": 84, "rating": "good"},
+          "gemini": {"score": 81, "rating": "good"},
+          "failureThreshold": "7+ sequential operations"
+        },
+        {
+          "testCategory": "Large Number Factorization",
+          "claude": {"score": 23, "rating": "poor"},
+          "chatgpt": {"score": 19, "rating": "poor"},
+          "gemini": {"score": 21, "rating": "poor"},
+          "failureThreshold": "12+ digit composites"
+        }
+      ],
+      "keyLimitations": [
+        {
+          "title": "Mathematical Precision Ceiling",
+          "description": "All models show systematic errors with large numbers and complex mathematical operations requiring exact computation. Not suitable for high-precision mathematical work.",
+          "severity": "critical"
+        }
+      ]
+    }
+  },
+  "categories": [
+    {
+      "id": "language-understanding",
+      "title": "Language Understanding",
+      "benchmarks": ["reading-comprehension", "semantic-reasoning", "context-analysis"]
+    },
+    {
+      "id": "mathematical-reasoning", 
+      "title": "Mathematical Reasoning",
+      "benchmarks": ["arithmetic-operations", "word-problems", "logical-reasoning"]
+    },
+    {
+      "id": "code-generation",
+      "title": "Code Generation", 
+      "benchmarks": ["algorithm-implementation", "api-integration", "debugging-tasks"]
+    },
+    {
+      "id": "factual-accuracy",
+      "title": "Factual Accuracy",
+      "benchmarks": ["historical-facts", "scientific-knowledge", "current-events"]
+    }
+  ]
+}

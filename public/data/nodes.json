@@ -1,0 +1,23 @@
+{
+  "startNode": {
+    "label": "What is AI?",
+    "href": "#onramp"
+  },
+  "leafNodes": [
+    {
+      "id": "node-learn",
+      "label": "How does AI learn?",
+      "href": "/learning-paths/how-ai-learns"
+    },
+    {
+      "id": "node-safe",
+      "label": "Is it safe?",
+      "href": "/learning-paths/ai-safety"
+    },
+    {
+      "id": "node-uses",
+      "label": "Common uses",
+      "href": "/dictionary/common-uses"
+    }
+  ]
+}

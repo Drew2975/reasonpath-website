@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReasonPath Hero Lottie - Fixed</title>
+    <link rel="stylesheet" href="../assets/css/hero-lottie.css">
+    <style>
+        body { margin: 0; font-family: system-ui; background: #f8f9fa; }
+        .debug-panel {
+            position: fixed; top: 10px; left: 10px; right: 10px;
+            background: rgba(0,0,0,0.9); color: #00ff00; padding: 15px;
+            border-radius: 8px; font-family: 'Courier New', monospace; font-size: 11px;
+            z-index: 2000; max-height: 200px; overflow-y: auto;
+        }
+        .debug-log { margin: 2px 0; }
+        .error { color: #ff4444; }
+        .success { color: #44ff44; }
+        .warning { color: #ffaa44; }
+        .test-controls {
+            position: fixed; bottom: 10px; right: 10px;
+            background: rgba(255,255,255,0.95); padding: 15px;
+            border-radius: 8px; z-index: 2000;
+        }
+        .test-controls button {
+            display: block; width: 100%; margin: 5px 0; padding: 8px;
+            border: 1px solid #ddd; border-radius: 4px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-panel">
+        <h4>🔧 Fixed Debug Console</h4>
+        <div id="debug-log"></div>
+    </div>
+    
+    <div class="test-controls">
+        <h4>Fixed Tests</h4>
+        <button onclick="testLottieLibraryFixed()">Test Lottie (Fixed)</button>
+        <button onclick="testFullLoad()">Full Animation Test</button>
+        <button onclick="testLensManual()">Manual Lens Test</button>
+        <button onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <section class="hero-section">
+        <div class="hero-canvas">
+            <div id="lottie-base"></div>
+            <div id="lottie-struct"></div>
+        </div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">Fixed Test Mode</h1>
+            <p class="hero-subtitle">Testing corrected Lottie integration...</p>
+        </div>
+        
+        <button class="reveal-toggle" aria-pressed="false">
+            Reveal Structure
+        </button>
+    </section>
+
+    <script>
+        // Enhanced debugging system
+        const debugLog = document.getElementById('debug-log');
+        let logCount = 0;
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.className = `debug-log ${type}`;
+            div.innerHTML = `[${timestamp}] ${message}`;
+            debugLog.appendChild(div);
+            debugLog.scrollTop = debugLog.scrollHeight;
+            console.log(`[${type.toUpperCase()}] ${message}`);
+            
+            if (++logCount > 50) {
+                debugLog.removeChild(debugLog.firstChild);
+                logCount--;
+            }
+        }
+
+        function clearLog() {
+            debugLog.innerHTML = '';
+            logCount = 0;
+        }
+
+        // Fixed Lottie library test
+        async function testLottieLibraryFixed() {
+            log('📦 Testing Lottie library (fixed version)...', 'info');
+            
+            try {
+                const lottieModule = await import('https://unpkg.com/lottie-web/build/player/lottie_light.min.js');
+                log(`✅ Lottie module imported successfully`, 'success');
+                
+                // Test different ways the module might be structured
+                const lottie = lottieModule.default || lottieModule;
+                
+                if (lottie && typeof lottie.loadAnimation === 'function') {
+                    log(`✅ Lottie library ready! Has loadAnimation method.`, 'success');
+                    
+                    // Log available properties (safely)
+                    const props = Object.keys(lottie).slice(0, 10); // First 10 properties
+                    log(`📋 Available methods: ${props.join(', ')}`, 'info');
+                    
+                    return lottie;
+                } else {
+                    log(`❌ Lottie object structure unexpected`, 'error');
+                    log(`📋 Module keys: ${Object.keys(lottieModule)}`, 'warning');
+                    return null;
+                }
+                
+            } catch (error) {
+                log(`❌ Lottie import failed: ${error.message}`, 'error');
+                return null;
+            }
+        }
+
+        // Full load test with corrected library handling
+        async function testFullLoad() {
+            log('🚀 Starting full animation load test...', 'info');
+            
+            // Get Lottie library
+            const lottie = await testLottieLibraryFixed();
+            if (!lottie) {
+                log('❌ Cannot proceed without Lottie library', 'error');
+                return;
+            }
+            
+            // Load animation data
+            try {
+                log('📁 Loading hero-glassbox.json...', 'info');
+                const response = await fetch('../assets/lottie/hero-glassbox.json');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const animationData = await response.json();
+                log(`📊 Animation loaded: ${animationData.layers?.length || 0} layers, ${animationData.op} frames`, 'success');
+                
+                // Test container
+                const container = document.getElementById('lottie-base');
+                if (!container) {
+                    log('❌ Container #lottie-base not found', 'error');
+                    return;
+                }
+                
+                log('🎬 Creating Lottie animation...', 'info');
+                
+                // Create animation with error handling
+                const animation = lottie.loadAnimation({
+                    container: container,
+                    renderer: 'svg',
+                    loop: true,
+                    autoplay: true,
+                    animationData: animationData
+                });
+                
+                // Wait a moment for DOM injection
+                setTimeout(() => {
+                    const svg = container.querySelector('svg');
+                    if (svg) {
+                        log('✅ SUCCESS! SVG animation created and visible!', 'success');
+                        log(`📐 SVG dimensions: ${svg.getAttribute('width')} x ${svg.getAttribute('height')}`, 'info');
+                        
+                        // Fix aspect ratio
+                        svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+                        log('🔧 Aspect ratio set to slice mode', 'info');
+                        
+                    } else {
+                        log('❌ SVG not found in container after animation creation', 'error');
+                    }
+                }, 500);
+                
+                // Store animation globally for further testing
+                window.testAnimation = animation;
+                
+            } catch (error) {
+                log(`❌ Animation creation failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Manual lens test
+        function testLensManual() {
+            log('👁️ Testing manual lens effect...', 'info');
+            
+            const struct = document.getElementById('lottie-struct');
+            if (!struct) {
+                log('❌ Structure container not found', 'error');
+                return;
+            }
+            
+            // Apply lens effect manually
+            struct.style.setProperty('--mx', '50%');
+            struct.style.setProperty('--my', '50%');
+            struct.style.setProperty('--mr', '180px');
+            
+            log('✅ Lens effect applied (180px radius at center)', 'success');
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                struct.style.setProperty('--mr', '0px');
+                log('🔄 Lens effect removed', 'info');
+            }, 3000);
+        }
+
+        // Enhanced reveal toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggle = document.querySelector('.reveal-toggle');
+            if (toggle) {
+                toggle.addEventListener('click', () => {
+                    const pressed = toggle.getAttribute('aria-pressed') === 'true';
+                    toggle.setAttribute('aria-pressed', String(!pressed));
+                    
+                    const struct = document.getElementById('lottie-struct');
+                    if (struct) {
+                        struct.style.setProperty('--mx', '50%');
+                        struct.style.setProperty('--my', '50%');
+                        struct.style.setProperty('--mr', pressed ? '0px' : '180px');
+                        
+                        log(`🎛️ Toggle: ${pressed ? 'OFF' : 'ON'} (${pressed ? '0' : '180'}px)`, 'info');
+                    }
+                });
+            }
+            
+            log('🎯 Page loaded - ready for testing!', 'success');
+        });
+
+        // Auto-run basic tests
+        setTimeout(() => {
+            log('🔄 Running automatic diagnostics...', 'info');
+            testLottieLibraryFixed();
+        }, 1000);
+    </script>
+</body>
+</html>

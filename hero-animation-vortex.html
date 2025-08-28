@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReasonPath Hero Animation - VORTEX VERSION</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #F8F9FA;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-container {
+            width: 100%;
+            max-width: 1200px;
+            height: clamp(520px, 68vh, 760px);
+            position: relative;
+            background: #F8F9FA;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .hero-canvas {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 22%;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 0.5rem;
+            line-height: 1.1;
+        }
+
+        .hero-content .subhead {
+            font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+            color: #00407A;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #E55A00, #FF6B1A);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(229, 90, 0, 0.3);
+        }
+
+        .dev-controls {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            z-index: 100;
+            width: 320px;
+        }
+
+        .dev-controls h3 {
+            color: #E55A00;
+            margin-bottom: 0.5rem;
+        }
+
+        .dev-controls button {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            margin: 0.2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .dev-controls button:hover {
+            background: #E55A00;
+        }
+
+        .dev-controls input {
+            width: 60px;
+            background: #222;
+            color: white;
+            border: 1px solid #555;
+            padding: 0.2rem;
+            font-size: 0.7rem;
+        }
+
+        .status-line {
+            margin: 0.2rem 0;
+            font-family: monospace;
+        }
+
+        .vortex-controls {
+            background: rgba(0,40,122,0.1);
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            border-radius: 4px;
+            border-left: 3px solid #00407A;
+        }
+
+        .vortex-controls h4 {
+            color: #00407A;
+            font-size: 0.8rem;
+            margin-bottom: 0.3rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-container" id="heroContainer">
+        <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
+        
+        <div class="hero-content">
+            <h1>AI, explained by AI. For everyone.</h1>
+            <p class="subhead">Your curiosity brings our process to life.</p>
+            <a href="#" class="cta-button">Start Your Path</a>
+        </div>
+    </div>
+
+    <div class="dev-controls">
+        <h3>🌀 VORTEX DEBUG</h3>
+        
+        <div class="status-line">State: <span id="stateDisplay">loading...</span></div>
+        <div class="status-line">Time: <span id="timeDisplay">0.0s</span></div>
+        <div class="status-line">Vortex: <span id="vortexStatus">inactive</span></div>
+        
+        <div style="margin: 1rem 0;">
+            <button onclick="window.__hero.reset()">Reset</button>
+            <button onclick="window.__hero.trigger()">Trigger</button>
+            <button onclick="debugState()">Check State</button>
+        </div>
+        
+        <div class="vortex-controls">
+            <h4>Vortex Parameters</h4>
+            Duration: <input id="vortexDur" value="1500"/> ms<br>
+            Fade Delay: <input id="vortexDelay" value="700"/> ms<br>
+            Spin Rounds: <input id="spinRounds" value="3.5"/><br>
+            <button id="applyVortexParams">Apply Live</button>
+        </div>
+        
+        <div class="status-line">Orange: <span id="orangeCount">0</span></div>
+        <div class="status-line">Blue: <span id="blueCount">0</span></div>
+    </div>
+
+    <script>
+        // Helper easing functions (from ChatGPT's implementation)
+        function easeInQuad(t) { return t * t; }
+        function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+        function clamp(v, a = 0, b = 1) { return Math.max(a, Math.min(b, v)); }
+
+        // DEBUG FUNCTIONS
+        function debugState() {
+            console.log('=== VORTEX STATE DEBUG ===');
+            const hero = window.__hero.instance;
+            console.log({
+                state: hero.state,
+                vortexStarted: hero.vortexStarted,
+                vortexStartTime: hero.vortexStartTime,
+                blueParticleCount: hero.blueParticles.length,
+                vortexCentroid: hero.vortexCentroid
+            });
+            
+            if (hero.vortexStarted) {
+                const now = performance.now();
+                const rawProgress = clamp((now - hero.vortexStartTime) / hero.vortexDuration, 0, 1);
+                const fadeDelay = hero.vortexFadeDelay || 0;
+                const fadeDenom = Math.max(1, hero.vortexDuration - fadeDelay);
+                const fadeProgress = clamp((now - hero.vortexStartTime - fadeDelay) / fadeDenom, 0, 1);
+                
+                console.log('Vortex progress:', {
+                    rawProgress: rawProgress.toFixed(3),
+                    fadeProgress: fadeProgress.toFixed(3),
+                    timeElapsed: ((now - hero.vortexStartTime) / 1000).toFixed(2) + 's'
+                });
+                
+                // Sample particle debug
+                if (hero.blueParticles.length > 0) {
+                    const sample = hero.blueParticles[0];
+                    console.log('Sample particle:', {
+                        position: { x: Math.round(sample.x), y: Math.round(sample.y) },
+                        initialAngle: sample._initialAngle,
+                        initialRadius: sample._initialRadius,
+                        alpha: sample.alpha,
+                        size: sample.size
+                    });
+                }
+            }
+        }
+
+        // ReasonPath Hero Animation Controller with Vortex Integration
+        class HeroController {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.state = 'idle';
+                this.startTime = 0;
+                this.hasTriggered = false;
+                this.debugMode = true;
+                
+                // Vortex system (from ChatGPT's implementation)
+                this.vortexStarted = false;
+                this.vortexStartTime = 0;
+                this.vortexCleanup = false;
+                this.vortexDuration = 1500; // 1.5 seconds
+                this.vortexFadeDelay = 700;  // 0.7 second delay before fade
+                this.vortexCentroid = { x: 0, y: 0 };
+                
+                // Particles
+                this.orangeParticles = [];
+                this.blueParticles = [];
+                this.lensPosition = { x: 0, y: 0 };
+                
+                // Geometry
+                this.Cx = 0;
+                this.Cy = 0;
+                this.L = 0;
+                this.V1 = { x: 0, y: 0 };
+                this.V2 = { x: 0, y: 0 };
+                this.V3 = { x: 0, y: 0 };
+                
+                // Animation
+                this.keyframes = null;
+                this.isAnimating = false;
+                
+                this.init();
+            }
+            
+            init() {
+                console.log('🌀 Initializing HeroController with Vortex...');
+                this.setupCanvas();
+                this.setupParticles();
+                this.bindEvents();
+                this.bindVortexControls();
+                this.start();
+                console.log('✅ HeroController with Vortex ready');
+            }
+            
+            setupCanvas() {
+                const rect = this.canvas.getBoundingClientRect();
+                
+                const scale = Math.min(window.devicePixelRatio || 1, 1.75);
+                const maxPixels = 1920 * 1080;
+                const currentPixels = rect.width * scale * rect.height * scale;
+                
+                const finalScale = currentPixels > maxPixels ? 
+                    Math.sqrt(maxPixels / (rect.width * rect.height)) : scale;
+                
+                this.canvas.width = rect.width * finalScale;
+                this.canvas.height = rect.height * finalScale;
+                this.ctx.scale(finalScale, finalScale);
+                
+                // Calculate safe area
+                const safeTop = rect.height * 0.22;
+                const safeHeight = rect.height * 0.78;
+                const safeWidth = rect.width;
+                
+                this.Cx = safeWidth / 2;
+                this.Cy = safeTop + (safeHeight / 2);
+                
+                // Triangle geometry - increased size
+                const isMobile = window.innerWidth < 768;
+                const isTablet = window.innerWidth < 1024;
+                const sizeMultiplier = isMobile ? 0.30 : isTablet ? 0.32 : 0.35;
+                
+                this.L = Math.min(safeWidth, safeHeight) * sizeMultiplier;
+                
+                // Vertices
+                this.V1 = { x: this.Cx, y: this.Cy - (this.L / Math.sqrt(3)) };
+                this.V2 = { x: this.Cx - this.L/2, y: this.Cy + (this.L/(2*Math.sqrt(3))) };
+                this.V3 = { x: this.Cx + this.L/2, y: this.Cy + (this.L/(2*Math.sqrt(3))) };
+                
+                // Calculate vortex centroid (triangle center)
+                this.vortexCentroid = {
+                    x: (this.V1.x + this.V2.x + this.V3.x) / 3,
+                    y: (this.V1.y + this.V2.y + this.V3.y) / 3
+                };
+                
+                console.log('Vortex centroid calculated:', this.vortexCentroid);
+                
+                this.buildKeyframes();
+            }
+            
+            buildKeyframes() {
+                const E = 'easeInOutSine';
+                const rL = this.L;
+                const canvasWidth = this.canvas.getBoundingClientRect().width;
+                
+                // Extended timeline to allow vortex completion
+                this.keyframes = {
+                    claude: [
+                        {t: 10.0, x: -50, y: this.Cy - rL * 0.3, ease: E},
+                        {t: 12.0, x: this.Cx - 0.20*rL, y: this.Cy + 0.15*rL, ease: E},
+                        {t: 15.8, x: this.Cx + 0.10*rL, y: this.Cy + 0.15*rL, ease: E},
+                        {t: 19.8, x: this.Cx + 0.10*rL, y: this.V1.y + 0.08*rL, ease: E},
+                        {t: 21.4, x: this.V1.x, y: this.V1.y, ease: E},
+                        {t: 25.0, x: this.V1.x, y: this.V1.y, ease: 'linear'}, // Extended for vortex
+                    ],
+                    chatgpt: [
+                        {t: 10.0, x: canvasWidth + 50, y: this.Cy + rL * 0.4, ease: E},
+                        {t: 12.5, x: this.Cx + 0.22*rL, y: this.Cy + 0.20*rL, ease: E},
+                        {t: 15.8, x: this.Cx, y: this.Cy, ease: E},
+                        {t: 19.8, x: this.Cx - 0.18*rL, y: this.Cy + 0.10*rL, ease: E},
+                        {t: 21.4, x: this.V2.x, y: this.V2.y, ease: E},
+                        {t: 25.0, x: this.V2.x, y: this.V2.y, ease: 'linear'},
+                    ],
+                    gemini: [
+                        {t: 10.0, x: this.Cx, y: -50, ease: E},
+                        {t: 13.0, x: this.Cx + 0.28*rL, y: this.Cy - 0.05*rL, ease: E},
+                        {t: 15.8, x: this.Cx + 0.22*rL, y: this.Cy - 0.18*rL, ease: E},
+                        {t: 19.8, x: this.Cx + 0.10*rL, y: this.Cy + 0.12*rL, ease: E},
+                        {t: 21.4, x: this.V3.x, y: this.V3.y, ease: E},
+                        {t: 25.0, x: this.V3.x, y: this.V3.y, ease: 'linear'},
+                    ]
+                };
+            }
+            
+            setupParticles() {
+                const isMobile = window.innerWidth < 768;
+                const isTablet = window.innerWidth < 1024;
+                const orangeSize = isMobile ? 8 : isTablet ? 10 : 12;
+                const blueSize = isMobile ? 3.5 : isTablet ? 4 : 4.5;
+                
+                // Orange particles start off-screen (use keyframe starting positions)
+                this.orangeParticles = [
+                    { 
+                        id: 'claude', 
+                        x: this.keyframes.claude[0].x, // Use keyframe start position
+                        y: this.keyframes.claude[0].y, 
+                        size: orangeSize,
+                        color: '#E55A00',
+                        breathPhase: 0
+                    },
+                    { 
+                        id: 'chatgpt', 
+                        x: this.keyframes.chatgpt[0].x, // Use keyframe start position
+                        y: this.keyframes.chatgpt[0].y, 
+                        size: orangeSize,
+                        color: '#E55A00',
+                        breathPhase: Math.PI * 0.66
+                    },
+                    { 
+                        id: 'gemini', 
+                        x: this.keyframes.gemini[0].x, // Use keyframe start position
+                        y: this.keyframes.gemini[0].y, 
+                        size: orangeSize,
+                        color: '#E55A00',
+                        breathPhase: Math.PI * 1.33
+                    }
+                ];
+                
+                // Blue particles with vortex-ready properties
+                this.blueParticles = [];
+                for (let i = 0; i < 8; i++) {
+                    this.blueParticles.push({
+                        x: this.Cx + (Math.random() - 0.5) * this.L * 4.0,
+                        y: this.Cy + (Math.random() - 0.5) * this.L * 3.5,
+                        size: blueSize,
+                        baseSize: blueSize, // Store original size for vortex scaling
+                        color: Math.random() > 0.5 ? '#00407A' : '#212529',
+                        driftPhase: Math.random() * Math.PI * 2,
+                        driftSpeedX: 0.35 + Math.random() * 0.2,
+                        driftSpeedY: 0.35 + Math.random() * 0.2,
+                        driftAmpX: 20 + Math.random() * 10,
+                        driftAmpY: 18 + Math.random() * 10,
+                        baseX: 0,
+                        baseY: 0,
+                        opacity: 1,
+                        alpha: 1, // Separate alpha for vortex fade
+                        // Vortex properties (will be initialized when vortex starts)
+                        _initialAngle: null,
+                        _initialRadius: null,
+                        _delayOffset: null,
+                        _dead: false
+                    });
+                    
+                    this.blueParticles[i].baseX = this.blueParticles[i].x;
+                    this.blueParticles[i].baseY = this.blueParticles[i].y;
+                }
+            }
+            
+            bindEvents() {
+                let hasEntered = false;
+                
+                this.canvas.addEventListener('pointerenter', () => {
+                    if (!hasEntered && !this.hasTriggered) {
+                        hasEntered = true;
+                        this.trigger();
+                    }
+                });
+                
+                this.canvas.addEventListener('pointermove', (e) => {
+                    const rect = this.canvas.getBoundingClientRect();
+                    this.lensPosition.x = e.clientX - rect.left;
+                    this.lensPosition.y = e.clientY - rect.top;
+                });
+                
+                window.addEventListener('resize', () => {
+                    this.setupCanvas();
+                    this.setupParticles();
+                });
+            }
+            
+            bindVortexControls() {
+                document.getElementById('applyVortexParams').addEventListener('click', () => {
+                    this.vortexDuration = Number(document.getElementById('vortexDur').value) || this.vortexDuration;
+                    this.vortexFadeDelay = Number(document.getElementById('vortexDelay').value) || this.vortexFadeDelay;
+                    
+                    this._vortexParams = this._vortexParams || {};
+                    this._vortexParams.spinRounds = Number(document.getElementById('spinRounds').value) || 3.5;
+                    
+                    console.log('Vortex parameters updated:', {
+                        duration: this.vortexDuration,
+                        fadeDelay: this.vortexFadeDelay,
+                        spinRounds: this._vortexParams.spinRounds
+                    });
+                });
+            }
+            
+            trigger() {
+                if (this.state !== 'idle' || this.hasTriggered) return;
+                
+                this.state = 'choreo';
+                this.startTime = performance.now();
+                this.hasTriggered = true;
+                this.isAnimating = true;
+                
+                console.log('🌀 Animation triggered with vortex system');
+            }
+            
+            // ChatGPT's vortex initialization method
+            startVortex(startTime) {
+                this.vortexStarted = true;
+                this.vortexStartTime = startTime;
+                this.vortexCleanup = false;
+                
+                const centroid = this.vortexCentroid;
+                
+                // Vortex parameters (tweakable)
+                this._vortexParams = this._vortexParams || {
+                    spinRounds: 3.5,       // how many revolutions while collapsing
+                    minRadius: 2,          // don't collapse to exact 0 (px)
+                    minSize: 0.6,          // smallest visible dot size during spiral
+                };
+                
+                // Initialize per-particle polar coords & slight offsets/delays
+                this.blueParticles.forEach(p => {
+                    p._initialAngle  = Math.atan2(p.y - centroid.y, p.x - centroid.x);
+                    p._initialRadius = Math.hypot(p.x - centroid.x, p.y - centroid.y);
+                    p._delayOffset   = (Math.random() - 0.5) * 0.12; // seconds jitter
+                    p.alpha = 1;
+                    p.baseSize = p.baseSize || p.size;
+                    p._dead = false;
+                });
+                
+                console.log('🌀 Vortex started with', this.blueParticles.length, 'particles');
+                this.emit('hero_vortex_start');
+            }
+            
+            easeInOutSine(t) {
+                return -(Math.cos(Math.PI * t) - 1) / 2;
+            }
+            
+            interpolateKeyframes(keyframes, t) {
+                let prevFrame = keyframes[0];
+                let nextFrame = keyframes[keyframes.length - 1];
+                
+                for (let i = 0; i < keyframes.length - 1; i++) {
+                    if (t >= keyframes[i].t && t <= keyframes[i + 1].t) {
+                        prevFrame = keyframes[i];
+                        nextFrame = keyframes[i + 1];
+                        break;
+                    }
+                }
+                
+                if (prevFrame === nextFrame) {
+                    return { x: prevFrame.x, y: prevFrame.y };
+                }
+                
+                const segmentProgress = (t - prevFrame.t) / (nextFrame.t - prevFrame.t);
+                const easedProgress = prevFrame.ease === 'linear' ? 
+                    segmentProgress : this.easeInOutSine(segmentProgress);
+                
+                return {
+                    x: prevFrame.x + (nextFrame.x - prevFrame.x) * easedProgress,
+                    y: prevFrame.y + (nextFrame.y - prevFrame.y) * easedProgress
+                };
+            }
+            
+            update(deltaTime) {
+                const now = performance.now();
+                
+                if (this.state === 'choreo') {
+                    const elapsed = (now - this.startTime) / 1000;
+                    
+                    // Update orange particles along keyframes
+                    this.orangeParticles.forEach(particle => {
+                        const keyframes = this.keyframes[particle.id];
+                        const pos = this.interpolateKeyframes(keyframes, elapsed);
+                        particle.x = pos.x;
+                        particle.y = pos.y;
+                    });
+                    
+                    // Start vortex when triangle completes (21.4s)
+                    if (elapsed >= 21.4 && !this.vortexStarted) {
+                        this.startVortex(now);
+                    }
+                    
+                    // Extended choreography to allow vortex completion
+                    if (elapsed >= 25.0) {
+                        this.state = 'ambient';
+                        this.isAnimating = false;
+                        console.log('🏁 Choreography complete (extended for vortex)');
+                    }
+                }
+                
+                this.updateBlueParticles(deltaTime);
+                this.updateDebugUI();
+            }
+            
+            // ChatGPT's vortex implementation integrated
+            updateBlueParticles(deltaTime) {
+                // Vortex has priority - runs independently of choreography state
+                if (this.vortexStarted) {
+                    const now = performance.now();
+                    const rawProgress = clamp((now - this.vortexStartTime) / this.vortexDuration, 0, 1);
+                    const params = this._vortexParams || { spinRounds: 3.5, minRadius: 2, minSize: 0.6 };
+                    const centroid = this.vortexCentroid;
+                    
+                    // Fade begins after vortexFadeDelay
+                    const fadeDelay = this.vortexFadeDelay || 0;
+                    const fadeDenom = Math.max(1, this.vortexDuration - fadeDelay);
+                    const fadeProgress = clamp((now - this.vortexStartTime - fadeDelay) / fadeDenom, 0, 1);
+                    
+                    this.blueParticles.forEach(p => {
+                        // Per-particle local progress accounts for tiny offsets
+                        const localRaw = clamp(rawProgress - (p._delayOffset || 0), 0, 1);
+                        
+                        // Spin + inward (angle + radius)
+                        const spinAmount = params.spinRounds * 2 * Math.PI;
+                        const angle = (p._initialAngle || 0) + spinAmount * (1 - easeInQuad(localRaw));
+                        const radius = Math.max(params.minRadius, (p._initialRadius || 0) * (1 - easeInQuad(localRaw)));
+                        
+                        p.x = centroid.x + Math.cos(angle) * radius;
+                        p.y = centroid.y + Math.sin(angle) * radius;
+                        
+                        // Fade & scale - starts only after fadeDelay
+                        const alpha = 1 - easeOutCubic(fadeProgress);
+                        p.alpha = clamp(alpha, 0, 1);
+                        p.opacity = p.alpha; // Keep opacity in sync
+                        
+                        p.size = Math.max(params.minSize, (p.baseSize || p.size) * (1 - fadeProgress));
+                    });
+                    
+                    // Cleanup when both spin and fade complete
+                    if (rawProgress >= 1 && fadeProgress >= 1 && !this.vortexCleanup) {
+                        this.vortexCleanup = true;
+                        setTimeout(() => {
+                            this.blueParticles = [];
+                            console.log('🌀 Vortex complete - particles cleared');
+                            this.emit('hero_vortex_complete');
+                        }, 30);
+                    }
+                    
+                    return; // Skip normal drift behavior during vortex
+                }
+                
+                // Normal chase phase behavior (pre-vortex)
+                const now = performance.now();
+                const elapsed = this.state === 'choreo' ? (now - this.startTime) / 1000 : 0;
+                
+                this.blueParticles.forEach(particle => {
+                    // Teasing behavior during chase phase
+                    particle.driftPhase += deltaTime * particle.driftSpeedX * 0.001;
+                    const driftX = Math.sin(particle.driftPhase) * particle.driftAmpX;
+                    const driftY = Math.sin(particle.driftPhase * 0.8) * particle.driftAmpY;
+                    
+                    let targetX = particle.baseX + driftX;
+                    let targetY = particle.baseY + driftY;
+                    
+                    // Cursor resistance
+                    const dx = targetX - this.lensPosition.x;
+                    const dy = targetY - this.lensPosition.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const teasingRadius = 80;
+                    
+                    if (distance < teasingRadius && distance > 0) {
+                        const force = 3.0 * Math.pow(1 - distance / teasingRadius, 0.8);
+                        const dirX = dx / distance;
+                        const dirY = dy / distance;
+                        
+                        const maxStep = 35;
+                        const stepX = Math.min(Math.max(dirX * force * deltaTime, -maxStep), maxStep);
+                        const stepY = Math.min(Math.max(dirY * force * deltaTime, -maxStep), maxStep);
+                        
+                        targetX += stepX;
+                        targetY += stepY;
+                    }
+                    
+                    const responseSpeed = distance < teasingRadius ? 0.3 : 0.05;
+                    particle.x += (targetX - particle.x) * responseSpeed;
+                    particle.y += (targetY - particle.y) * 0.02;
+                });
+            }
+            
+            updateDebugUI() {
+                document.getElementById('stateDisplay').textContent = this.state;
+                document.getElementById('vortexStatus').textContent = this.vortexStarted ? 
+                    (this.vortexCleanup ? 'complete' : 'active') : 'inactive';
+                
+                const elapsed = this.state === 'choreo' ? (performance.now() - this.startTime) / 1000 : 0;
+                document.getElementById('timeDisplay').textContent = elapsed.toFixed(1) + 's';
+                
+                document.getElementById('orangeCount').textContent = this.orangeParticles.length;
+                document.getElementById('blueCount').textContent = this.blueParticles.length;
+            }
+            
+            render() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Draw triangle after 21.4s
+                if (this.state === 'ambient' || 
+                    (this.state === 'choreo' && (performance.now() - this.startTime) / 1000 >= 21.4)) {
+                    this.drawTriangle();
+                }
+                
+                this.drawParticles();
+            }
+            
+            drawTriangle() {
+                this.ctx.save();
+                this.ctx.strokeStyle = 'rgba(229, 90, 0, 0.3)';
+                this.ctx.lineWidth = 2;
+                
+                this.ctx.beginPath();
+                this.ctx.moveTo(this.V1.x, this.V1.y);
+                this.ctx.lineTo(this.V2.x, this.V2.y);
+                this.ctx.lineTo(this.V3.x, this.V3.y);
+                this.ctx.closePath();
+                this.ctx.stroke();
+                
+                this.ctx.restore();
+            }
+            
+            drawParticles() {
+                this.ctx.save();
+                
+                // Blue particles (using alpha from vortex)
+                this.blueParticles.forEach(particle => {
+                    this.ctx.globalAlpha = particle.alpha || particle.opacity || 1;
+                    this.ctx.fillStyle = particle.color;
+                    this.ctx.beginPath();
+                    this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                    this.ctx.fill();
+                });
+                
+                this.ctx.globalAlpha = 1;
+                
+                // Orange particles
+                this.orangeParticles.forEach(particle => {
+                    this.ctx.fillStyle = particle.color;
+                    this.ctx.beginPath();
+                    this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                    this.ctx.fill();
+                });
+                
+                this.ctx.restore();
+            }
+            
+            start() {
+                const animate = (currentTime) => {
+                    const deltaTime = currentTime - (this.lastTime || currentTime);
+                    this.lastTime = currentTime;
+                    
+                    this.update(deltaTime);
+                    this.render();
+                    
+                    requestAnimationFrame(animate);
+                };
+                
+                requestAnimationFrame(animate);
+            }
+            
+            reset() {
+                console.log('🔄 RESET with vortex cleanup');
+                this.state = 'idle';
+                this.startTime = 0;
+                this.hasTriggered = false;
+                this.isAnimating = false;
+                
+                // Reset vortex state
+                this.vortexStarted = false;
+                this.vortexStartTime = 0;
+                this.vortexCleanup = false;
+                
+                this.setupParticles();
+                console.log('✅ Reset complete');
+            }
+            
+            emit(eventName) {
+                console.log(`📊 ${eventName}`);
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🌀 Initializing vortex version...');
+            const canvas = document.getElementById('heroCanvas');
+            const hero = new HeroController(canvas);
+            
+            window.__hero = {
+                reset: () => hero.reset(),
+                trigger: () => hero.trigger(),
+                instance: hero
+            };
+            
+            console.log('✅ Vortex version ready');
+        });
+    </script>
+</body>
+</html>

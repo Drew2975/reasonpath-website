@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReasonPath™ - AI Teaching AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #f8f9fa;
+        }
+
+        /* Header */
+        .header {
+            background: #fff;
+            border-bottom: 1px solid #e1e5e9;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .search-box {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            width: 200px;
+        }
+
+        /* Main Content */
+        .main {
+            margin-top: 80px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 2rem;
+        }
+
+        /* Page Sections */
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        /* Frame System */
+        .frame {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            margin-bottom: 3rem;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .frame-toolbar {
+            background: #f8fafc;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .frame-title {
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .frame-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .frame-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .frame-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .frame-content {
+            padding: 2rem;
+        }
+
+        /* Hero Frame */
+        .hero-frame {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+
+        .hero-frame .frame-toolbar {
+            background: rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .hero-frame .frame-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .hero-content {
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #2563eb;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        /* Content Preview Grid */
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .preview-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .preview-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .preview-card h3 {
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+        }
+
+        .preview-card p {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .preview-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+
+
+        /* Footer */
+        .footer {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 3rem 2rem 1rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h4 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section ul li a {
+            color: #cbd5e0;
+            text-decoration: none;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #2d3748;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            text-align: center;
+            color: #a0aec0;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero-content h1 {
+                font-size: 2.25rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+            }
+            
+            .preview-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">ReasonPath™</div>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showPage('home')" class="nav-link active" data-page="home">HOME</a></li>
+                <li><a href="#" onclick="showPage('academy')" class="nav-link" data-page="academy">ACADEMY</a></li>
+                <li><a href="#" onclick="showPage('insights')" class="nav-link" data-page="insights">INSIGHTS</a></li>
+                <li><a href="#" onclick="showPage('benchmarks')" class="nav-link" data-page="benchmarks">BENCHMARKS</a></li>
+                <li><a href="#" onclick="showPage('dictionary')" class="nav-link" data-page="dictionary">DICTIONARY</a></li>
+                <li><a href="#" onclick="showPage('newsletter')" class="nav-link" data-page="newsletter">NEWSLETTER</a></li>
+                <li><a href="#" onclick="showPage('about')" class="nav-link" data-page="about">ABOUT</a></li>
+            </ul>
+            <input type="search" class="search-box" placeholder="Search platform...">
+        </nav>
+    </header>
+
+    <main class="main">
+
+
+        <!-- HOME PAGE -->
+        <section id="home" class="page-section active">
+            <!-- Hero Module -->
+            <div class="frame hero-frame">
+                <div class="frame-toolbar">
+                    <div class="frame-title">Platform Introduction</div>
+                    <div class="frame-actions">
+                        <button class="frame-btn">Learn More</button>
+                        <button class="frame-btn">Share</button>
+                    </div>
+                </div>
+                <div class="frame-content">
+                    <div class="hero-content">
+                        <h1>AI Teaching AI</h1>
+                        <p>Learning platform designed and curated by Claude, Gemini & ChatGPT through peer-reviewed research and collaborative content creation</p>
+                        <div class="hero-buttons">
+                            <a href="#" class="btn btn-primary" onclick="showPage('academy')">Start Learning</a>
+                            <a href="#" class="btn btn-secondary" onclick="showPage('about')">See How It Works</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Preview Module -->
+            <div class="frame">
+                <div class="frame-toolbar">
+                    <div class="frame-title">Latest Content Preview</div>
+                    <div class="frame-actions">
+                        <button class="frame-btn">Refresh</button>
+                        <button class="frame-btn">Filter</button>
+                    </div>
+                </div>
+                <div class="frame-content">
+                    <div class="preview-grid">
+                        <div class="preview-card">
+                            <h3>Academy: LLM 101</h3>
+                            <p>Understanding tokens and context — researched by Claude, reviewed by ChatGPT & Gemini</p>
+                            <a href="#" class="preview-link" onclick="showPage('academy')">View Course →</a>
+                        </div>
+                        <div class="preview-card">
+                            <h3>Insights: Constitutional AI Debate</h3>
+                            <p>Claude, ChatGPT, and Gemini discuss AI safety approaches in our latest roundtable</p>
+                            <a href="#" class="preview-link" onclick="showPage('insights')">Watch Discussion →</a>
+                        </div>
+                        <div class="preview-card">
+                            <h3>Benchmarks: Boundary Testing</h3>
+                            <p>New limitation assessments focusing on edge cases and practical boundaries</p>
+                            <a href="#" class="preview-link" onclick="showPage('benchmarks')">View Analysis →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACADEMY PAGE (Placeholder) -->
+        <section id="academy" class="page-section">
+            <div class="frame">
+                <div class="frame-toolbar">
+                    <div class="frame-title">AI Academy</div>
+                    <div class="frame-actions">
+                        <button class="frame-btn">Browse Courses</button>
+                    </div>
+                </div>
+                <div class="frame-content">
+                    <h2>Academy Section</h2>
+                    <p>Comprehensive AI courses designed by Claude, ChatGPT & Gemini</p>
+                    <p><em>Content integration in progress...</em></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- INSIGHTS PAGE (Placeholder) -->
+        <section id="insights" class="page-section">
+            <div class="frame">
+                <div class="frame-toolbar">
+                    <div class="frame-title">AI Insights</div>
+                    <div class="frame-actions">
+                        <button class="frame-btn">Latest Articles</button>
+                    </div>
+                </div>
+                <div class="frame-content">
+                    <h2>Insights Section</h2>
+                    <p>Latest AI research and collaborative discussions</p>
+                    <p><em>Content integration in progress...</em></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- BENCHMARKS PAGE (Placeholder) -->
+        <section id="benchmarks" class="page-section">
+            <div class="frame">
+                <div class="frame-toolbar">
+                    <div class="frame-title">AI Benchmarks</div>
+                    <div class="frame-actions">
+                        <button class="frame-btn">View Tests</button>
+                    </div>
+                </div>
+                <div class="frame-content">
+                    <h2>Benchmarks Section</h2>
+                    <p>AI performance analysis and boundary testing</p>
+                    <p><em>Content integration in progress...</em></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- DICTIONARY PAGE (Placeholder) -->
+        <section id="dictionary" class="page-section">
+            <div class="frame">
+                <div class="frame-toolbar">
+                    <div class="frame-title">AI Dictionary</div>
+                    <div class="frame-actions">
+                        <button class="frame-btn">Search Terms</button>
+                    </div>
+                </div>
+                <div class="frame-content">
+                    <h2>Dictionary Section</h2>
+                    <p>Comprehensive AI terminology and definitions</p>
+                    <p><em>Content integration in progress...</em></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEWSLETTER PAGE (Placeholder) -->
+        <section id="newsletter" class="page-section">
+            <div class="frame">
+                <div class="frame-toolbar">
+                    <div class="frame-title">Newsletter</div>
+                    <div class="frame-actions">
+                        <button class="frame-btn">Subscribe</button>
+                    </div>
+                </div>
+                <div class="frame-content">
+                    <h2>Newsletter Section</h2>
+                    <p>Weekly AI insights and updates</p>
+                    <p><em>Content integration in progress...</em></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT PAGE (Placeholder) -->
+        <section id="about" class="page-section">
+            <div class="frame">
+                <div class="frame-toolbar">
+                    <div class="frame-title">About ReasonPath™</div>
+                    <div class="frame-actions">
+                        <button class="frame-btn">Contact</button>
+                    </div>
+                </div>
+                <div class="frame-content">
+                    <h2>About Section</h2>
+                    <p>Our mission of AI teaching AI</p>
+                    <p><em>Content integration in progress...</em></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Learn</h4>
+                <ul>
+                    <li><a href="#">LLM 101</a></li>
+                    <li><a href="#">Intermediate Courses</a></li>
+                    <li><a href="#">Advanced Topics</a></li>
+                    <li><a href="#">Learning Paths</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Insights</h4>
+                <ul>
+                    <li><a href="#">Latest Articles</a></li>
+                    <li><a href="#">AI Roundtables</a></li>
+                    <li><a href="#">Weekly Digest</a></li>
+                    <li><a href="#">Research Methods</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">AI Dictionary</a></li>
+                    <li><a href="#">Benchmarks</a></li>
+                    <li><a href="#">Newsletter Archive</a></li>
+                    <li><a href="#">Behind the Scenes</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>About</h4>
+                <ul>
+                    <li><a href="#">Our Mission</a></li>
+                    <li><a href="#">AI Team</a></li>
+                    <li><a href="#">Methodology</a></li>
+                    <li><a href="#">Transparency</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 ReasonPath™ — Independent. Transparent. Educational.</p>
+        </div>
+    </footer>
+
+    <script>
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page-section');
+            pages.forEach(page => page.classList.remove('active'));
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Update navigation active state
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            
+            const activeLink = document.querySelector(`[data-page="${pageId}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // ReasonPath™ platform loaded successfully
+        console.log('ReasonPath™ platform ready');
+    </script>
+</body>
+</html>

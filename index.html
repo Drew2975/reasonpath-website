@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Turn AI confusion into clarity. Learn AI concepts through plain language explanations, practical examples, and a 150+ term dictionary. Start anywhere, no prerequisites.">
+    <meta name="keywords" content="AI education, machine learning, artificial intelligence, educational platform, research, analysis">
+    <meta name="robots" content="index, follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' 'unsafe-inline'; 
+                   style-src 'self' 'unsafe-inline'; 
+                   img-src 'self' data:; 
+                   connect-src 'self';">
+    
+    <!-- Legal Meta Tags -->
+    <meta name="disclaimer" content="Educational use only. No official partnerships or endorsements implied.">
+    <meta name="attribution" content="AI system names used for educational and comparative analysis purposes under fair use.">
+    <title>ReasonPath™ - AI-Powered Learning Platform</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <style>
+        /* Hero tagline styling */
+        .hero-tagline {
+            font-size: 1.125rem;
+            font-style: italic;
+            opacity: 0.9;
+            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Screen reader only class for accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+    
+
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="nav">
+            <div class="logo">ReasonPath™</div>
+            <ul class="nav-links">
+                <li><a href="#" class="nav-link active" data-page="home">HOME</a></li>
+                <li><a href="#" class="nav-link" data-page="academy">ACADEMY</a></li>
+                <li><a href="#" class="nav-link" data-page="labs">LABS</a></li>
+                <li><a href="#" class="nav-link" data-page="ai-glossary">AI GLOSSARY</a></li>
+                <li><a href="#" class="nav-link" data-page="newsletter">NEWSLETTER</a></li>
+                <li><a href="#" class="nav-link" data-page="about">ABOUT</a></li>
+                <li><a href="#" class="nav-link" data-page="legal">LEGAL</a></li>
+            </ul>
+            
+            <div class="header-right">
+                <label for="main-search" class="sr-only">Search platform</label>
+                <input type="search" id="main-search" class="search-box" placeholder="Search platform...">
+                <button class="mobile-menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- Mobile Menu Overlay -->
+        <div class="mobile-menu-overlay"></div>
+        
+        <!-- Mobile Menu Panel -->
+        <nav class="mobile-menu" role="navigation" aria-label="Mobile navigation">
+            <div class="mobile-menu-header">
+                <div class="mobile-logo">ReasonPath™</div>
+                <button class="mobile-menu-close" aria-label="Close navigation menu">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <ul class="mobile-nav-links">
+                <li><a href="#" class="mobile-nav-link" data-page="home">HOME</a></li>
+                <li><a href="#" class="mobile-nav-link" data-page="academy">ACADEMY</a></li>
+                <li><a href="#" class="mobile-nav-link" data-page="labs">LABS</a></li>
+                <li><a href="#" class="mobile-nav-link" data-page="ai-glossary">AI GLOSSARY</a></li>
+                <li><a href="#" class="mobile-nav-link" data-page="newsletter">NEWSLETTER</a></li>
+                <li><a href="#" class="mobile-nav-link" data-page="about">ABOUT</a></li>
+                <li><a href="#" class="mobile-nav-link" data-page="legal">LEGAL</a></li>
+            </ul>
+            <div class="mobile-menu-search">
+                <input type="search" class="mobile-search-box" placeholder="Search platform..." aria-label="Search">
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <!-- HOME PAGE -->
+        <section id="home" class="page-section active">
+            <!-- Hero Module -->
+            <div class="frame hero-frame">
+                <div class="frame-content">
+                    <div class="hero-content">
+                        <h1>Curious about AI? You're in the right place.</h1>
+                        <p>Turn AI confusion into clarity. We break down complex concepts into ideas you can grasp, build on, and actually use. Start anywhere, learn what matters to you.</p>
+                        <p class="hero-tagline">Your journey from AI curious to AI confident.</p>
+                        <div class="hero-buttons">
+                            <a href="#" class="btn btn-primary" data-page="academy">Start Learning</a>
+                            <a href="#" class="btn btn-secondary" data-page="ai-glossary">Browse AI Glossary</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Preview Module -->
+            <div class="frame">
+                <div class="frame-toolbar">
+                    <div class="frame-title">Latest Content Preview</div>
+                    <div class="frame-actions">
+                        <button class="frame-btn" data-action="refresh">Refresh</button>
+                        <button class="frame-btn" data-action="filter">Filter</button>
+                    </div>
+                </div>
+                <div class="frame-content">
+                    <div class="preview-grid">
+                        <div class="preview-card">
+                            <h3>Academy: LLM Fundamentals</h3>
+                            <p>Understanding tokens and context — developed through AI-assisted research and multi-model validation</p>
+                            <a href="#" class="preview-link" data-page="academy">View Course →</a>
+                        </div>
+                        <div class="preview-card">
+                            <h3>Labs: AI System Analysis</h3>
+                            <p>Testing results and research findings from our ongoing experiments</p>
+                            <a href="#" class="preview-link" data-page="labs">View Research →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACADEMY PAGE (Placeholder) -->
+        <section id="academy" class="page-section">
+            <div class="frame">
+                <div class="frame-toolbar">
+                    <div class="frame-title">The ReasonPath Academy</div>
+                    <div class="frame-actions">
+                        <button class="frame-btn" data-action="refresh">Refresh</button>
+                        <button class="frame-btn" data-action="filter">Filter</button>
+                    </div>
+                </div>
+                <div class="frame-content">
+                    <h2>The ReasonPath Academy</h2>
+                    <p class="attribution-notice">An educational resource for understanding the principles, applications, and critical limitations of modern AI.</p>
+                    
+                    <!-- My Learning Dashboard -->
+                    <div class="frame" style="margin-top: 2rem;">
+                        <div class="frame-toolbar">
+                            <div class="frame-title">My Learning Dashboard</div>
+                        </div>
+                        <div class="frame-content">
+                            <h3>My Progress</h3>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                                <div style="text-align: center; padding: 1rem; background: #f8fafc; border-radius: 8px;">
+                                    <div style="font-size: 1.5rem; font-weight: 700; color: #00407A;">1 of 3</div>
+                                    <div style="color: #64748b;">Paths Started</div>
+                                </div>
+                                <div style="text-align: center; padding: 1rem; background: #f8fafc; border-radius: 8px;">
+                                    <div style="font-size: 1.5rem; font-weight: 700; color: #00407A;">2 of 8</div>
+                                    <div style="color: #64748b;">Courses Completed</div>
+                                </div>
+                            </div>
+                            
+                            <h4>In-Progress Course</h4>
+                            <div style="padding: 1.5rem; background: #f8fafc; border-radius: 8px; margin-top: 1rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                    <strong>The Problem of Hallucination</strong>
+                                    <span style="color: #64748b;">75% complete</span>
+                                </div>
+                                <div style="background: #e2e8f0; height: 6px; border-radius: 3px; margin-bottom: 1rem;">
+                                    <div style="background: linear-gradient(90deg, #E55A00, #00407A); height: 100%; width: 75%; border-radius: 3px;"></div>
+                                </div>
+                                <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Continue Course</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Learning Paths -->
+                    <div class="frame" style="margin-top: 2rem;">
+                        <div class="frame-toolbar">
+                            <div class="frame-title">Explore Learning Paths</div>
+                        </div>
+                        <div class="frame-content">
+                            
+                            <!-- AI Fundamentals Path -->
+                            <div style="margin-bottom: 3rem;">
+                                <h3 style="color: #00407A; margin-bottom: 1rem;">Path Category 1: AI Fundamentals</h3>
+                                <p style="margin-bottom: 1.5rem; color: #4a5568;">Start here to build a solid foundation. These courses cover the essential, non-technical concepts behind how AI models work.</p>
+                                
+                                <div class="preview-grid">
+                                    <div class="preview-card">
+                                        <h4>What is a Large Language Model?</h4>
+                                        <p>A simple primer on what LLMs are, how they are trained, and their basic capabilities.</p>
+                                        <div style="display: flex; gap: 1rem; margin: 1rem 0; font-size: 0.875rem; color: #64748b;">
+                                            <span>🎓 Beginner</span>
+                                            <span>⏱️ ~30 mins</span>
+                                        </div>
+                                        <a href="#" class="preview-link">Start Course →</a>
+                                    </div>
+                                    
+                                    <div class="preview-card">
+                                        <h4>How AI Learns: Training vs. Inference</h4>
+                                        <p>Understand the fundamental difference between teaching an AI and using it to generate answers.</p>
+                                        <div style="display: flex; gap: 1rem; margin: 1rem 0; font-size: 0.875rem; color: #64748b;">
+                                            <span>🎓 Beginner</span>
+                                            <span>⏱️ ~45 mins</span>
+                                        </div>
+                                        <a href="#" class="preview-link">Start Course →</a>
+                                    </div>
+                                    
+                                    <div class="preview-card">
+                                        <h4>From Data to Decisions: The AI Pipeline</h4>
+                                        <p>A high-level overview of the end-to-end process of building a functional AI application.</p>
+                                        <div style="display: flex; gap: 1rem; margin: 1rem 0; font-size: 0.875rem; color: #64748b;">
+                                            <span>🎓 Beginner</span>
+                                            <span>⏱️ ~45 mins</span>
+                                        </div>
+                                        <a href="#" class="preview-link">Start Course →</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- AI Limitations Path -->
+                            <div style="margin-bottom: 3rem;">
+                                <h3 style="color: #00407A; margin-bottom: 1rem;">Path Category 2: Understanding AI Limitations</h3>
+                                <p style="margin-bottom: 1.5rem; color: #4a5568;">Go beyond the hype. This path focuses on the inherent weaknesses and failure modes of current AI systems, aligning with ReasonPath's core mission.</p>
+                                
+                                <div class="preview-grid">
+                                    <div class="preview-card">
+                                        <h4>The Problem of Hallucination</h4>
+                                        <p>Learn why models confidently generate false information and explore the concept of grounding.</p>
+                                        <div style="display: flex; gap: 1rem; margin: 1rem 0; font-size: 0.875rem; color: #64748b;">
+                                            <span>🎓 Intermediate</span>
+                                            <span>⏱️ ~1 hour</span>
+                                        </div>
+                                        <a href="#" class="preview-link">Start Course →</a>
+                                    </div>
+                                    
+                                    <div class="preview-card">
+                                        <h4>Unpacking Model Bias</h4>
+                                        <p>An analysis of how biases in data and design lead to skewed and unfair AI outputs.</p>
+                                        <div style="display: flex; gap: 1rem; margin: 1rem 0; font-size: 0.875rem; color: #64748b;">
+                                            <span>🎓 Intermediate</span>
+                                            <span>⏱️ ~1.5 hours</span>
+                                        </div>
+                                        <a href="#" class="preview-link">Start Course →</a>
+                                    </div>
+                                    
+                                    <div class="preview-card">
+                                        <h4>The Black Box Challenge: Intro to Interpretability</h4>
+                                        <p>A look at the ongoing research challenge of understanding <em>why</em> a model makes a specific decision.</p>
+                                        <div style="display: flex; gap: 1rem; margin: 1rem 0; font-size: 0.875rem; color: #64748b;">
+                                            <span>🎓 Advanced</span>
+                                            <span>⏱️ ~2 hours</span>
+                                        </div>
+                                        <a href="#" class="preview-link">Start Course →</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- AI Safety & Alignment Path -->
+                            <div style="margin-bottom: 2rem;">
+                                <h3 style="color: #00407A; margin-bottom: 1rem;">Path Category 3: AI Safety & Alignment</h3>
+                                <p style="margin-bottom: 1.5rem; color: #4a5568;">Explore the practical techniques and ethical frameworks used to make AI systems safer, more reliable, and aligned with human values.</p>
+                                
+                                <div class="preview-grid">
+                                    <div class="preview-card">
+                                        <h4>AI Guardrails and Red Teaming</h4>
+                                        <p>An introduction to the proactive security measures used to test and constrain model behavior.</p>
+                                        <div style="display: flex; gap: 1rem; margin: 1rem 0; font-size: 0.875rem; color: #64748b;">
+                                            <span>🎓 Intermediate</span>
+                                            <span>⏱️ ~1 hour</span>
+                                        </div>
+                                        <a href="#" class="preview-link">Start Course →</a>
+                                    </div>
+                                    
+                                    <div class="preview-card">
+                                        <h4>The Alignment Problem</h4>
+                                        <p>A conceptual overview of the challenge of ensuring advanced AI systems pursue intended goals.</p>
+                                        <div style="display: flex; gap: 1rem; margin: 1rem 0; font-size: 0.875rem; color: #64748b;">
+                                            <span>🎓 Advanced</span>
+                                            <span>⏱️ ~1.5 hours</span>
+                                        </div>
+                                        <a href="#" class="preview-link">Start Course →</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LABS PAGE (Combined Insights & Benchmarks) -->
+        <section id="labs" class="page-section">
+            <div class="frame">
+                <div class="frame-toolbar">
+                    <div class="frame-title">ReasonPath Labs</div>
+                    <div class="frame-actions">
+                        <button class="frame-btn">Latest Research</button>
+                        <button class="frame-btn">Run Tests</button>
+                    </div>
+                </div>
+                <div class="frame-content">
+                    <h2>Labs</h2>
+                    <p>Where we test AI systems, analyze research papers, and share findings</p>
+                    <p><em>Content integration in progress...</em></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI GLOSSARY PAGE (Placeholder) -->
+        <section id="ai-glossary" class="page-section">
+            <div class="frame">
+                <div class="frame-toolbar">
+                    <div class="frame-title">AI Glossary</div>
+                    <div class="frame-actions">
+                        <button class="frame-btn" data-action="reset-filters">Reset Filters</button>
+                        <button class="frame-btn" data-action="random-term">Random Term</button>
+                    </div>
+                </div>
+                <div class="frame-content">
+                    <h2>AI Glossary</h2>
+                    <p class="attribution-notice">150+ AI terms explained in plain English - navigate AI terminology with confidence</p>
+                    
+                    <!-- Search and Filter -->
+                    <div style="margin: 2rem 0; padding: 1.5rem; background: #f8fafc; border-radius: 8px;">
+                        <label for="dictionary-search" class="sr-only">Search AI glossary terms</label>
+                        <input type="search" id="dictionary-search" placeholder="Search terms..." style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                <button class="category-filter active" data-category="all" style="padding: 0.25rem 0.75rem; background: #00407A; color: white; border: none; border-radius: 4px; font-size: 0.875rem;">All</button>
+                                <button class="category-filter" data-category="Core Concepts" style="padding: 0.25rem 0.75rem; background: #e2e8f0; border: none; border-radius: 4px; font-size: 0.875rem;">Core Concepts</button>
+                                <button class="category-filter" data-category="Model Types" style="padding: 0.25rem 0.75rem; background: #e2e8f0; border: none; border-radius: 4px; font-size: 0.875rem;">Model Types</button>
+                                <button class="category-filter" data-category="Training" style="padding: 0.25rem 0.75rem; background: #e2e8f0; border: none; border-radius: 4px; font-size: 0.875rem;">Training</button>
+                                <button class="category-filter" data-category="AI Safety" style="padding: 0.25rem 0.75rem; background: #e2e8f0; border: none; border-radius: 4px; font-size: 0.875rem;">AI Safety</button>
+                                <button class="category-filter" data-category="Applications" style="padding: 0.25rem 0.75rem; background: #e2e8f0; border: none; border-radius: 4px; font-size: 0.875rem;">Applications</button>
+                                <button class="category-filter" data-category="Technical Terms" style="padding: 0.25rem 0.75rem; background: #e2e8f0; border: none; border-radius: 4px; font-size: 0.875rem;">Technical Terms</button>
+                            </div>
+                            <div id="results-count" style="font-size: 0.875rem; color: #64748b; min-width: 120px; text-align: right;">
+                                Loading...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dictionary Terms -->
+                    <div class="frame" style="margin-top: 2rem;">
+                        <div class="frame-toolbar">
+                            <div class="frame-title">Glossary Terms</div>
+                        </div>
+                        <div class="frame-content">
+                            <div id="dictionary-grid" class="dictionary-terms-grid">
+                                <div class="loading-message">
+                                    <p>Loading glossary terms...</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Browse button removed - terms display automatically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEWSLETTER PAGE (Placeholder) -->
+        <section id="newsletter" class="page-section">
+            <div class="frame hero-frame">
+                <div class="frame-toolbar">
+                    <div class="frame-title">ReasonPath Learning Digest</div>
+                    <div class="frame-actions">
+                        <button class="frame-btn">Subscribe</button>
+                    </div>
+                </div>
+                <div class="frame-content">
+                    <div class="hero-content">
+                        <h1>ReasonPath Learning Digest</h1>
+                        <p>AI learning insights from an AI-designed learning hub</p>
+                        <p style="margin-bottom: 2rem;">The ReasonPath Learning Digest shares discoveries, experiments, and honest takes on AI development. Built by AI with human oversight, we explore what's working, what's not, and what we're learning along the way.</p>
+                        
+                        <div class="hero-buttons">
+                            <button class="btn btn-primary">Subscribe to Learning Updates</button>
+                            <button class="btn btn-secondary">Browse Archive</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Value Proposition -->
+            <div class="frame" style="margin-top: 2rem;">
+                <div class="frame-toolbar">
+                    <div class="frame-title">What You'll Get</div>
+                </div>
+                <div class="frame-content">
+                    <div class="preview-grid">
+                        <div class="preview-card">
+                            <h4>🧪 Real Experiments</h4>
+                            <p>Weekly experiments with new AI tools and techniques, plus honest assessments of what actually works vs. hype.</p>
+                        </div>
+                        <div class="preview-card">
+                            <h4>📚 Learning Resources</h4>
+                            <p>Resource roundups of actually useful AI learning materials, curated by AI and tested by humans.</p>
+                        </div>
+                        <div class="preview-card">
+                            <h4>🎯 Behind-the-Scenes</h4>
+                            <p>Honest looks at building an AI-designed platform, including mistakes, discoveries, and lessons learned.</p>
+                        </div>
+                        <div class="preview-card">
+                            <h4>👥 Community Highlights</h4>
+                            <p>Discoveries from fellow AI learners sharing their experiments and insights with the community.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Latest Issue -->
+            <div class="frame" style="margin-top: 2rem;">
+                <div class="frame-toolbar">
+                    <div class="frame-title">Latest Issue #12 - March 15, 2024</div>
+                </div>
+                <div class="frame-content">
+                    <h3>"What We Learned Building This Newsletter (Spoiler: AI Did Most of It)"</h3>
+                    
+                    <div style="margin: 1.5rem 0;">
+                        <h4 style="color: #00407A; margin-bottom: 0.5rem;">This Week's Experiment</h4>
+                        <h5>Building a Dictionary with Claude: Success and Struggles</h5>
+                        <p>We created a 150-term AI dictionary using Claude 4. <strong>What worked:</strong> comprehensive definitions and great analogies. <strong>What didn't:</strong> keeping the scope reasonable (we originally planned 50 terms).</p>
+                        <p style="font-style: italic; color: #64748b;">Key discovery: AI analogies are surprisingly effective for explaining complex concepts</p>
+                    </div>
+
+                    <div style="margin: 1.5rem 0;">
+                        <h4 style="color: #00407A; margin-bottom: 0.5rem;">Honest Assessment</h4>
+                        <p><strong>When AI Suggestions Go Wrong:</strong> This week our AI suggested adding a "quantum computing module." We don't know quantum computing. Neither does the AI, really. Filed under "maybe later."</p>
+                    </div>
+
+                    <div style="margin: 1.5rem 0;">
+                        <h4 style="color: #00407A; margin-bottom: 0.5rem;">Community Spotlight</h4>
+                        <p><strong>Sarah from Portland</strong> shared her experience using our dictionary to explain AI to her team. Apparently the analogies actually helped! Small wins count.</p>
+                    </div>
+                    
+                    <a href="#" class="preview-link">Read Full Issue →</a>
+                </div>
+            </div>
+
+            <!-- Archive -->
+            <div class="frame" style="margin-top: 2rem;">
+                <div class="frame-toolbar">
+                    <div class="frame-title">Recent Issues</div>
+                </div>
+                <div class="frame-content">
+                    <div style="display: grid; gap: 1rem;">
+                        <div style="padding: 1rem; background: #f8fafc; border-radius: 6px; border-left: 3px solid #E55A00;">
+                            <h5>Issue #11 - March 8, 2024</h5>
+                            <p style="color: #64748b; margin: 0.25rem 0;">"Claude Helped Design Our Website: Here's What Worked and What Didn't"</p>
+                        </div>
+                        <div style="padding: 1rem; background: #f8fafc; border-radius: 6px; border-left: 3px solid #E55A00;">
+                            <h5>Issue #10 - March 1, 2024</h5>
+                            <p style="color: #64748b; margin: 0.25rem 0;">"Learning in Public: Our First Month of Mistakes"</p>
+                        </div>
+                        <div style="padding: 1rem; background: #f8fafc; border-radius: 6px; border-left: 3px solid #E55A00;">
+                            <h5>Issue #9 - February 23, 2024</h5>
+                            <p style="color: #64748b; margin: 0.25rem 0;">"AI Tools That Actually Save Time (And Ones That Don't)"</p>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button class="btn btn-secondary">View All Issues</button>
+                        <p style="margin-top: 1rem; color: #64748b; font-size: 0.9rem;"><em>Simple signup, easy unsubscribe. We're too busy learning to spam you.</em></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LEGAL SECTION -->
+        <section id="legal" class="page-section">
+            <div class="frame">
+                <div class="frame-toolbar">
+                    <div class="frame-title">Legal Information & Compliance</div>
+                </div>
+                <div class="frame-content">
+                    <div id="legal-disclaimer">
+                        <h2>Legal Disclaimer</h2>
+                        <div class="legal-notice">
+                            <h4>⚖️ Independent Educational Platform</h4>
+                            <p>ReasonPath™ is an independent educational platform. We are not affiliated with, endorsed by, or officially connected to any AI company including but not limited to OpenAI, Anthropic, Google, or their respective products and services.</p>
+                        </div>
+                        
+                        <h3>AI System Usage & Attribution</h3>
+                        <ul style="margin-left: 1.5rem; color: #4a5568;">
+                            <li><strong>Educational Purpose:</strong> AI system names and references are used solely for educational, analytical, and comparative purposes</li>
+                            <li><strong>Fair Use:</strong> All usage falls under fair use provisions for educational content and criticism</li>
+                            <li><strong>No Partnership Claims:</strong> No official partnerships, endorsements, or business relationships are claimed</li>
+                            <li><strong>Trademark Recognition:</strong> All trademarks remain property of their respective owners</li>
+                        </ul>
+
+                        <h3>Content Methodology Disclosure</h3>
+                        <p>Our educational content is developed through:</p>
+                        <ul style="margin-left: 1.5rem; color: #4a5568;">
+                            <li>Independent research using publicly available AI tools</li>
+                            <li>Comparative analysis across multiple AI systems</li>
+                            <li>Educational synthesis and original commentary</li>
+                            <li>No access to proprietary systems or insider information</li>
+                        </ul>
+
+                        <h3>Risk Management & Compliance</h3>
+                        <div class="legal-notice">
+                            <p><strong>🔍 Compliance Monitoring:</strong> This platform undergoes regular legal compliance reviews. 
+                            If you represent an AI company and have concerns about our educational usage, please contact: legal@reasonpath.com</p>
+                        </div>
+                    </div>
+
+                    <div id="attribution-policy" style="margin-top: 3rem;">
+                        <h2>Attribution Policy</h2>
+                        <p>When referencing AI systems in our educational content:</p>
+                        
+                        <h4>✅ Compliant Usage Patterns:</h4>
+                        <ul style="margin-left: 1.5rem; color: #4a5568;">
+                            <li>"Analysis using AI language models"</li>
+                            <li>"Comparative study across AI systems"</li>
+                            <li>"Educational content developed with AI assistance"</li>
+                            <li>"Research methodology involving multiple AI tools"</li>
+                        </ul>
+
+                        <h4>❌ Avoided Language:</h4>
+                        <ul style="margin-left: 1.5rem; color: #dc3545;">
+                            <li>Partnership or collaboration claims</li>
+                            <li>Official endorsement implications</li>
+                            <li>Proprietary access suggestions</li>
+                            <li>Business relationship indicators</li>
+                        </ul>
+
+                        <h3>Legal Contact & Escalation</h3>
+                        <p><strong>For AI Companies:</strong> If you have concerns about our educational usage of system names or methodologies, please contact our legal team before taking any action. We are committed to educational fair use and open to discussion.</p>
+                        <p><strong>Contact:</strong> legal@reasonpath.com | Subject: "AI Usage Inquiry"</p>
+                    </div>
+
+                    <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e2e8f0;">
+                        <h3>Terms of Service & Privacy</h3>
+                        <p><strong>Last Updated:</strong> August 23, 2025</p>
+                        <p><strong>Next Review:</strong> November 23, 2025</p>
+                        <p>This platform operates under standard educational fair use provisions. Full terms of service and privacy policy available upon request.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT PAGE (Updated with Legal Considerations) -->
+        <section id="about" class="page-section">
+            <div class="frame">
+                <div class="frame-toolbar">
+                    <div class="frame-title">About ReasonPath™</div>
+                    <div class="frame-actions">
+                        <button class="frame-btn">Contact</button>
+                    </div>
+                </div>
+                <div class="frame-content">
+                    <h2>Independent AI Education</h2>
+                    <p>ReasonPath™ is an independent educational platform focused on AI literacy and understanding.</p>
+                    
+                    <div class="legal-notice">
+                        <strong>Legal Transparency:</strong> We maintain strict legal compliance in all educational content. 
+                        Our methodology involves independent research and analysis without any official AI company partnerships.
+                    </div>
+
+                    <h3>Educational Methodology</h3>
+                    <p>Our content development process:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li><strong>Independent Research:</strong> Using publicly available AI tools and documentation</li>
+                        <li><strong>Comparative Analysis:</strong> Evaluating multiple AI systems for educational purposes</li>
+                        <li><strong>Original Commentary:</strong> Adding educational context and synthesis</li>
+                        <li><strong>Legal Compliance:</strong> Regular review of all content for trademark and fair use compliance</li>
+                    </ul>
+                    
+                    <h3>Contact & Legal</h3>
+                    <p><strong>General Inquiries:</strong> info@reasonpath.com</p>
+                    <p><strong>Legal Matters:</strong> legal@reasonpath.com</p>
+                    <p><strong>Press & Media:</strong> press@reasonpath.com</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Learn</h4>
+                <ul>
+                    <li><a href="#" data-page="academy">LLM 101</a></li>
+                    <li><a href="#" data-page="academy">Intermediate Courses</a></li>
+                    <li><a href="#" data-page="academy">Advanced Topics</a></li>
+                    <li><a href="#" data-page="academy">Learning Paths</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Labs</h4>
+                <ul>
+                    <li><a href="#" data-page="labs">Latest Research</a></li>
+                    <li><a href="#" data-page="labs">Test Results</a></li>
+                    <li><a href="#" data-page="labs">Analysis</a></li>
+                    <li><a href="#" data-page="labs">Experiments</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#" data-page="ai-glossary">AI Glossary</a></li>
+                    <li><a href="#" data-page="labs">Lab Reports</a></li>
+                    <li><a href="#" data-page="newsletter">Newsletter Archive</a></li>
+                    <li><a href="#" data-page="about">Behind the Scenes</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>About</h4>
+                <ul>
+                    <li><a href="#" data-page="about">Our Mission</a></li>
+                    <li><a href="#" data-page="about">Methodology</a></li>
+                    <li><a href="#" data-page="about">Research Process</a></li>
+                    <li><a href="#" data-page="about">Transparency</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal & Compliance</h4>
+                <ul>
+                    <li><a href="#" data-page="legal">Terms of Use</a></li>
+                    <li><a href="#" data-page="legal">Privacy Policy</a></li>
+                    <li><a href="#" data-page="legal">Attribution Policy</a></li>
+                    <li><a href="#" data-page="legal">Disclaimer</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 ReasonPath™ — Independent Educational Platform</p>
+            <div style="font-size: 0.8rem; margin-top: 1rem; opacity: 0.95; max-width: 900px; margin-left: auto; margin-right: auto; line-height: 1.4;">
+                <p><strong>Legal Disclaimer:</strong> Independent educational platform. AI system names used for educational analysis under fair use. No partnerships, endorsements, or official affiliations claimed. All trademarks property of respective owners. <a href="#" data-page="legal" style="color: #60a5fa;">View Full Legal Information</a></p>
+                <p style="margin-top: 0.75rem;"><strong>Contact:</strong> Legal: legal@reasonpath.com | General: info@reasonpath.com | <strong>Compliance Review:</strong> Aug 2025</p>
+            </div>
+        </div>
+    </footer>
+
+
+
+</body>
+</html>

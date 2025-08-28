@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReasonPath - Guided On-Ramp Hero</title>
+    <style>
+        /* Design Tokens */
+        :root {
+            --canvas-white: #F8F9FA;
+            --reasonpath-blue: #00407A;
+            --action-orange: #E55A00;
+            --logic-gray: #212529;
+            --shadow-color: rgba(33, 37, 41, 0.08);
+            
+            /* Typography */
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --weight-regular: 400;
+            --weight-semibold: 600;
+            
+            /* Spacing (8pt grid) */
+            --space-1: 8px;
+            --space-2: 16px;
+            --space-3: 24px;
+            --space-4: 32px;
+            --space-5: 40px;
+            --space-6: 48px;
+            --space-7: 56px;
+            --space-8: 64px;
+        }
+
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--canvas-white);
+            color: var(--reasonpath-blue);
+            line-height: 1.6;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-3);
+            position: relative;
+        }
+
+        .hero-container {
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Typography */
+        .hero-headline {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: var(--weight-semibold);
+            color: var(--reasonpath-blue);
+            margin-bottom: var(--space-2);
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .hero-subheadline {
+            font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+            font-weight: var(--weight-regular);
+            color: var(--reasonpath-blue);
+            margin-bottom: var(--space-5);
+            opacity: 0;
+            animation: fadeInUp 0.6s ease 0.1s forwards;
+        }
+
+        /* Primary CTA */
+        .hero-cta {
+            background: var(--action-orange);
+            color: var(--canvas-white);
+            font-weight: var(--weight-semibold);
+            font-size: 1.125rem;
+            padding: var(--space-2) var(--space-4);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease 0.2s forwards;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(229, 90, 0, 0.2);
+        }
+
+        .hero-cta:focus {
+            outline: 2px solid var(--reasonpath-blue);
+            outline-offset: 4px;
+        }
+
+        /* Skip Animation Link */
+        .skip-animation {
+            display: inline-block;
+            margin-left: var(--space-2);
+            color: var(--reasonpath-blue);
+            text-decoration: underline;
+            font-size: 0.875rem;
+            cursor: pointer;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease 0.25s forwards;
+        }
+
+        /* SVG Container */
+        .svg-container {
+            margin-top: var(--space-6);
+            opacity: 0;
+            animation: fadeIn 0.4s ease 0.3s forwards;
+            min-height: 300px;
+            position: relative;
+        }
+
+        /* SVG Styles */
+        .knowledge-map {
+            max-width: 600px;
+            width: 100%;
+            height: auto;
+        }
+
+        /* SVG Nodes */
+        .node {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .node-circle {
+            fill: var(--canvas-white);
+            stroke: var(--reasonpath-blue);
+            stroke-width: 2;
+            filter: drop-shadow(0 2px 4px var(--shadow-color));
+        }
+
+        #node-start {
+            opacity: 1;
+            transform-origin: center;
+            transition: transform 0.15s ease;
+        }
+
+        .leaf-node {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .node-text {
+            fill: var(--reasonpath-blue);
+            font-size: 12px;
+            font-weight: var(--weight-semibold);
+            pointer-events: none;
+            text-anchor: middle;
+        }
+
+        /* SVG Paths */
+        .connection-path {
+            stroke: var(--reasonpath-blue);
+            stroke-width: 2;
+            fill: none;
+            opacity: 0;
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+        }
+
+        /* Animation States */
+        .hero.is-live #node-start {
+            transform: scale(1.02);
+        }
+
+        .hero.is-live .connection-path {
+            opacity: 1;
+            animation: drawPath 0.4s ease 0.12s forwards;
+        }
+
+        .hero.is-live .leaf-node:nth-child(2) {
+            animation: nodeReveal 0.18s ease 0.52s forwards;
+        }
+
+        .hero.is-live .leaf-node:nth-child(3) {
+            animation: nodeReveal 0.18s ease 0.58s forwards;
+        }
+
+        .hero.is-live .leaf-node:nth-child(4) {
+            animation: nodeReveal 0.18s ease 0.64s forwards;
+        }
+
+        /* Secondary CTAs */
+        .secondary-ctas {
+            margin-top: var(--space-4);
+            opacity: 0;
+            transition: opacity 0.4s ease 0.7s;
+        }
+
+        .hero.is-live .secondary-ctas {
+            opacity: 1;
+        }
+
+        .secondary-cta {
+            color: var(--reasonpath-blue);
+            text-decoration: underline;
+            margin: 0 var(--space-2);
+            font-size: 1rem;
+        }
+
+        /* Mobile Chips (≤640px) */
+        .mobile-chips {
+            display: none;
+            flex-direction: column;
+            gap: var(--space-2);
+            margin-top: var(--space-4);
+        }
+
+        .chip-link {
+            display: block;
+            padding: var(--space-2) var(--space-3);
+            background: white;
+            border: 2px solid var(--reasonpath-blue);
+            border-radius: 8px;
+            color: var(--reasonpath-blue);
+            text-decoration: none;
+            font-weight: var(--weight-semibold);
+            transition: all 0.2s ease;
+            min-height: 44px;
+        }
+
+        .chip-link:hover, .chip-link:focus {
+            background: var(--reasonpath-blue);
+            color: var(--canvas-white);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @keyframes drawPath {
+            to { stroke-dashoffset: 0; }
+        }
+
+        @keyframes nodeReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-delay: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .hero.is-live .connection-path {
+                opacity: 1;
+                animation: none;
+                stroke-dashoffset: 0;
+            }
+
+            .hero.is-live .leaf-node {
+                opacity: 1;
+                transform: none;
+                animation: none;
+                transition: opacity 0.2s ease;
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 640px) {
+            .svg-container {
+                display: none;
+            }
+
+            .mobile-chips {
+                display: flex;
+                opacity: 0;
+                animation: fadeInUp 0.6s ease 0.3s forwards;
+            }
+
+            .skip-animation {
+                display: none;
+            }
+
+            .secondary-ctas {
+                opacity: 1;
+                transition: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero" role="main">
+        <div class="hero-container">
+            <h1 class="hero-headline">Curious about AI? You're in the right place.</h1>
+            <p class="hero-subheadline">Start with plain language. Build real understanding.</p>
+            
+            <button class="hero-cta" id="startButton">Start here: What is AI?</button>
+            <a href="#content" class="skip-animation">Skip animation</a>
+
+            <!-- Desktop SVG Map -->
+            <div class="svg-container">
+                <svg class="knowledge-map" viewBox="0 0 600 300" aria-hidden="true">
+                    <!-- Connection Paths -->
+                    <path class="connection-path" d="M 300 150 L 150 80" />
+                    <path class="connection-path" d="M 300 150 L 300 50" />
+                    <path class="connection-path" d="M 300 150 L 450 80" />
+
+                    <!-- Central Node -->
+                    <g id="node-start" class="node">
+                        <circle class="node-circle" cx="300" cy="150" r="35" />
+                        <text class="node-text" x="300" y="155">What is AI?</text>
+                    </g>
+
+                    <!-- Leaf Nodes -->
+                    <g class="node leaf-node">
+                        <circle class="node-circle" cx="150" cy="80" r="30" />
+                        <text class="node-text" x="150" y="85">How does AI learn?</text>
+                    </g>
+
+                    <g class="node leaf-node">
+                        <circle class="node-circle" cx="300" cy="50" r="30" />
+                        <text class="node-text" x="300" y="55">Is it safe?</text>
+                    </g>
+
+                    <g class="node leaf-node">
+                        <circle class="node-circle" cx="450" cy="80" r="30" />
+                        <text class="node-text" x="450" y="85">Common uses</text>
+                    </g>
+                </svg>
+
+                <!-- Secondary CTAs -->
+                <div class="secondary-ctas">
+                    <a href="/learning-paths" class="secondary-cta">See all learning paths</a>
+                    <a href="/dictionary" class="secondary-cta">Browse the dictionary</a>
+                </div>
+            </div>
+
+            <!-- Mobile Chips -->
+            <div class="mobile-chips">
+                <a href="/learning-paths/what-is-ai" class="chip-link">What is AI?</a>
+                <a href="/learning-paths/how-ai-learns" class="chip-link">How does AI learn?</a>
+                <a href="/learning-paths/ai-safety" class="chip-link">Is it safe?</a>
+            </div>
+
+            <!-- Mobile Secondary CTAs -->
+            <div class="secondary-ctas mobile-only">
+                <a href="/learning-paths" class="secondary-cta">See all learning paths</a>
+                <a href="/dictionary" class="secondary-cta">Browse the dictionary</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Minimal JavaScript (< 2KB)
+        (function() {
+            'use strict';
+
+            const hero = document.querySelector('.hero');
+            const startButton = document.getElementById('startButton');
+            const skipLink = document.querySelector('.skip-animation');
+            const leafNodes = document.querySelectorAll('.leaf-node');
+            
+            // Animation trigger
+            function triggerAnimation() {
+                hero.classList.add('is-live');
+                
+                // Accessibility: Move focus to first revealed node after animation
+                if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    setTimeout(() => {
+                        const firstNode = leafNodes[0];
+                        if (firstNode) {
+                            firstNode.setAttribute('tabindex', '0');
+                            firstNode.focus();
+                        }
+                    }, 700);
+                }
+            }
+
+            // Event listeners
+            startButton.addEventListener('click', triggerAnimation);
+            
+            skipLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                hero.classList.add('is-live');
+                // Immediately show all elements
+                leafNodes.forEach(node => {
+                    node.style.opacity = '1';
+                    node.style.transform = 'none';
+                });
+                document.querySelectorAll('.connection-path').forEach(path => {
+                    path.style.opacity = '1';
+                    path.style.strokeDashoffset = '0';
+                });
+            });
+
+            // Make nodes keyboard accessible
+            leafNodes.forEach(node => {
+                node.addEventListener('click', function() {
+                    // Navigate to appropriate learning path
+                    const text = this.querySelector('.node-text').textContent;
+                    if (text.includes('learn')) window.location.href = '/learning-paths/how-ai-learns';
+                    else if (text.includes('safe')) window.location.href = '/learning-paths/ai-safety';
+                    else if (text.includes('uses')) window.location.href = '/dictionary/common-uses';
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

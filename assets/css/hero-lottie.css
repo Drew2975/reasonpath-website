@@ -1,0 +1,158 @@
+/* Hero Lottie Animation Styles */
+.hero-section {
+  position: relative;
+  min-height: clamp(420px, 60vh, 680px);
+  aspect-ratio: 16/9;
+  background: #F8F9FA;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-aspect-ratio: 16/10) { 
+  .hero-section { 
+    min-height: 60vh; 
+  } 
+}
+
+.hero-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.hero-canvas svg {
+  width: 100%;
+  height: 100%;
+}
+
+#lottie-base {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+}
+
+#lottie-struct {
+  --mx: 50%;
+  --my: 50%;
+  --mr: 180px; /* ALWAYS VISIBLE FOR TESTING */
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  
+  /* Safari/WebKit fallback */
+  -webkit-mask-image: radial-gradient(circle var(--mr) at var(--mx) var(--my), #000 98%, transparent);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  
+  /* Standard mask */
+  mask-image: radial-gradient(circle var(--mr) at var(--mx) var(--my), #000 98%, transparent);
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+  
+  transition: -webkit-mask-size 0.18s ease-out, mask-size 0.18s ease-out;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  color: #212529;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  color: #6c757d;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+.reveal-toggle {
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 20;
+  background: rgba(0, 64, 122, 0.9);
+  color: white;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
+}
+
+.reveal-toggle:hover {
+  background: rgba(0, 64, 122, 1);
+  transform: translateY(-1px);
+}
+
+.reveal-toggle:focus {
+  outline: 2px solid #E55A00;
+  outline-offset: 2px;
+}
+
+@media (pointer: coarse) {
+  .reveal-toggle {
+    display: none;
+  }
+}
+
+.hero-poster {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: url('/assets/lottie/hero-poster.webp') center/cover;
+  z-index: 1;
+}
+
+.hero-poster.is-visible {
+  display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-canvas {
+    display: none;
+  }
+  
+  .hero-poster {
+    display: block;
+  }
+  
+  #lottie-base,
+  #lottie-struct {
+    display: none !important;
+  }
+}
+
+/* High contrast support */
+@media (prefers-contrast: high) {
+  #lottie-struct {
+    opacity: 0.8;
+  }
+  
+  .hero-title {
+    color: #000;
+  }
+}
+
+/* Performance optimizations */
+.hero-canvas,
+#lottie-base,
+#lottie-struct {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}

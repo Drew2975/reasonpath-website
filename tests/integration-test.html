@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReasonPath - Hero Integration Test</title>
+    <link rel="stylesheet" href="../assets/css/master.css">
+    <link rel="stylesheet" href="../assets/css/hero-lottie.css">
+    <style>
+        .debug-console {
+            position: fixed; top: 10px; left: 10px; right: 10px;
+            background: rgba(0,0,0,0.8); color: #0f0; padding: 10px;
+            border-radius: 5px; font-family: monospace; font-size: 11px;
+            z-index: 1000; max-height: 150px; overflow-y: auto;
+        }
+        .test-info {
+            position: fixed; bottom: 10px; right: 10px;
+            background: rgba(255,255,255,0.9); padding: 10px;
+            border-radius: 5px; font-size: 12px; z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-console" id="debug-console">
+        <div>Integration Test - Monitoring Console Output...</div>
+    </div>
+    
+    <div class="test-info">
+        <h4>Integration Test</h4>
+        <div>Testing updated hero controller</div>
+        <div>Open browser console for full logs</div>
+    </div>
+
+    <section class="hero-section">
+        <div class="hero-canvas">
+            <div id="lottie-base"></div>
+            <div id="lottie-struct"></div>
+        </div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">ReasonPath</h1>
+            <p class="hero-subtitle">Learn AI through structured news-to-knowledge pathways</p>
+            <div class="hero-buttons">
+                <a href="#academy" class="btn btn-primary">Learn More</a>
+                <a href="#newsletter" class="btn btn-secondary">Share</a>
+            </div>
+        </div>
+        
+        <button class="reveal-toggle" aria-pressed="false">
+            Reveal Structure
+        </button>
+        
+        <div class="hero-poster">
+            <div class="poster-content">Static Fallback Active</div>
+        </div>
+    </section>
+
+    <script src="../assets/js/hero-lottie.js"></script>
+    
+    <script>
+        // Capture console output for visual debug
+        const debugConsole = document.getElementById('debug-console');
+        let logCount = 0;
+        
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        function addToDebug(message, type = 'info') {
+            const div = document.createElement('div');
+            div.style.color = type === 'error' ? '#ff4444' : '#00ff00';
+            div.textContent = new Date().toLocaleTimeString() + ' - ' + message;
+            debugConsole.appendChild(div);
+            debugConsole.scrollTop = debugConsole.scrollHeight;
+            
+            if (++logCount > 20) {
+                debugConsole.removeChild(debugConsole.firstElementChild);
+                logCount--;
+            }
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addToDebug(args.join(' '), 'info');
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addToDebug(args.join(' '), 'error');
+        };
+        
+        // Test status after 5 seconds
+        setTimeout(() => {
+            const base = document.getElementById('lottie-base');
+            const struct = document.getElementById('lottie-struct');
+            
+            const baseSVG = base?.querySelector('svg');
+            const structSVG = struct?.querySelector('svg');
+            
+            addToDebug(`Base SVG: ${baseSVG ? 'Created' : 'Missing'}`, baseSVG ? 'info' : 'error');
+            addToDebug(`Struct SVG: ${structSVG ? 'Created' : 'Missing'}`, structSVG ? 'info' : 'error');
+            
+            if (baseSVG && structSVG) {
+                addToDebug('SUCCESS: Full hero animation integrated!', 'info');
+            }
+        }, 5000);
+    </script>
+</body>
+</html>

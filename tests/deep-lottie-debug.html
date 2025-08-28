@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lottie Deep Debug</title>
+    <link rel="stylesheet" href="../assets/css/hero-lottie.css">
+    <style>
+        body { margin: 0; font-family: system-ui; background: #f8f9fa; }
+        .debug-panel {
+            position: fixed; top: 10px; left: 10px; right: 10px;
+            background: rgba(0,0,0,0.9); color: #00ff00; padding: 15px;
+            border-radius: 8px; font-family: 'Courier New', monospace; font-size: 11px;
+            z-index: 2000; max-height: 300px; overflow-y: auto;
+        }
+        .debug-log { margin: 2px 0; }
+        .error { color: #ff4444; }
+        .success { color: #44ff44; }
+        .warning { color: #ffaa44; }
+    </style>
+</head>
+<body>
+    <div class="debug-panel">
+        <h4>🔍 Deep Lottie Diagnostic</h4>
+        <div id="debug-log"></div>
+    </div>
+
+    <section class="hero-section">
+        <div class="hero-canvas">
+            <div id="lottie-base"></div>
+            <div id="lottie-struct"></div>
+        </div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">Deep Debug Mode</h1>
+            <p class="hero-subtitle">Investigating Lottie library structure...</p>
+        </div>
+        
+        <button class="reveal-toggle" aria-pressed="false">
+            Test Structure
+        </button>
+    </section>
+
+    <script>
+        const debugLog = document.getElementById('debug-log');
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.className = `debug-log ${type}`;
+            div.innerHTML = `[${timestamp}] ${message}`;
+            debugLog.appendChild(div);
+            debugLog.scrollTop = debugLog.scrollHeight;
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+
+        // Deep diagnostic function
+        async function deepLottieDiagnostic() {
+            log('🔍 Starting deep Lottie diagnostic...', 'info');
+            
+            try {
+                const lottieModule = await import('https://unpkg.com/lottie-web/build/player/lottie_light.min.js');
+                log('✅ Raw import successful', 'success');
+                
+                // Check what we actually got
+                log(`📋 Module type: ${typeof lottieModule}`, 'info');
+                
+                // Safely check constructor
+                try {
+                    const constructorName = lottieModule.constructor?.name || 'unknown';
+                    log(`📋 Module constructor: ${constructorName}`, 'info');
+                } catch (e) {
+                    log('📋 Constructor info not available', 'warning');
+                }
+                
+                // List all properties
+                const moduleKeys = Object.keys(lottieModule);
+                log(`📋 Module keys (${moduleKeys.length}): ${moduleKeys.join(', ')}`, 'info');
+                
+                // Check for common Lottie properties/methods
+                const commonProps = ['loadAnimation', 'destroy', 'default', 'version', 'play', 'pause'];
+                const foundProps = commonProps.filter(prop => prop in lottieModule);
+                log(`🔍 Found common props: ${foundProps.join(', ')}`, foundProps.length > 0 ? 'success' : 'warning');
+                
+                // Try different access patterns
+                let lottie = null;
+                
+                // Pattern 1: Direct module
+                if (typeof lottieModule.loadAnimation === 'function') {
+                    lottie = lottieModule;
+                    log('✅ Pattern 1: Direct module access works!', 'success');
+                } 
+                // Pattern 2: Default export
+                else if (lottieModule.default && typeof lottieModule.default.loadAnimation === 'function') {
+                    lottie = lottieModule.default;
+                    log('✅ Pattern 2: Default export works!', 'success');
+                }
+                // Pattern 3: Check for nested structure
+                else {
+                    log('🔍 Checking nested structure...', 'warning');
+                    
+                    for (const key of moduleKeys) {
+                        const prop = lottieModule[key];
+                        if (prop && typeof prop === 'object' && typeof prop.loadAnimation === 'function') {
+                            lottie = prop;
+                            log(`✅ Pattern 3: Found loadAnimation in '${key}' property!`, 'success');
+                            break;
+                        }
+                    }
+                }
+                
+                if (lottie) {
+                    log('🎬 Lottie library ready! Testing animation creation...', 'success');
+                    
+                    // Test with our actual JSON file
+                    const response = await fetch('../assets/lottie/hero-glassbox.json');
+                    const animationData = await response.json();
+                    log(`📊 Animation data loaded: ${animationData.layers.length} layers`, 'success');
+                    
+                    // Create animation
+                    const container = document.getElementById('lottie-base');
+                    const animation = lottie.loadAnimation({
+                        container: container,
+                        renderer: 'svg',
+                        loop: true,
+                        autoplay: true,
+                        animationData: animationData
+                    });
+                    
+                    setTimeout(() => {
+                        const svg = container.querySelector('svg');
+                        if (svg) {
+                            log('🎉 SUCCESS! Animation created and SVG is in DOM!', 'success');
+                            svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+                            
+                            // Store for manual testing
+                            window.testLottie = lottie;
+                            window.testAnimation = animation;
+                            
+                        } else {
+                            log('❌ Animation created but no SVG found', 'error');
+                        }
+                    }, 500);
+                    
+                } else {
+                    log('❌ Could not find loadAnimation method anywhere', 'error');
+                    
+                    // Detailed module inspection
+                    for (const key of moduleKeys.slice(0, 5)) {
+                        const prop = lottieModule[key];
+                        log(`  ${key}: ${typeof prop} ${Array.isArray(prop) ? '(array)' : ''}`, 'info');
+                        
+                        if (typeof prop === 'object' && prop !== null) {
+                            const subKeys = Object.keys(prop).slice(0, 3);
+                            log(`    -> ${subKeys.join(', ')}`, 'info');
+                        }
+                    }
+                }
+                
+            } catch (error) {
+                log(`❌ Deep diagnostic failed: ${error.message}`, 'error');
+                console.error('Full error:', error);
+            }
+        }
+
+        // Test structure toggle (we know this works)
+        document.querySelector('.reveal-toggle').addEventListener('click', () => {
+            const struct = document.getElementById('lottie-struct');
+            const pressed = document.querySelector('.reveal-toggle').getAttribute('aria-pressed') === 'true';
+            
+            document.querySelector('.reveal-toggle').setAttribute('aria-pressed', String(!pressed));
+            
+            struct.style.setProperty('--mx', '50%');
+            struct.style.setProperty('--my', '50%');
+            struct.style.setProperty('--mr', pressed ? '0px' : '180px');
+            
+            log(`🎛️ Structure toggle: ${pressed ? 'OFF' : 'ON'}`, 'success');
+        });
+
+        // Auto-run
+        setTimeout(deepLottieDiagnostic, 1000);
+    </script>
+</body>
+</html>

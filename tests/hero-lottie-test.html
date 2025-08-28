@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReasonPath Hero Lottie Test</title>
+    <link rel="stylesheet" href="../assets/css/hero-lottie.css">
+    <style>
+        /* Basic page styles for testing */
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+        }
+        
+        .test-info {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            z-index: 1000;
+            max-width: 300px;
+        }
+        
+        .test-controls {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .test-controls button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .test-controls button:hover {
+            background: #f8f9fa;
+        }
+        
+        .content-below {
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Test Information Panel -->
+    <div class="test-info">
+        <h4>🧪 Hero Lottie Test</h4>
+        <div id="performance-info">Loading...</div>
+        <div id="connection-info"></div>
+        <div id="animation-status"></div>
+    </div>
+    
+    <!-- Test Controls -->
+    <div class="test-controls">
+        <h4>Test Controls</h4>
+        <button onclick="testReducedMotion()">Toggle Reduced Motion</button>
+        <button onclick="testLensInteraction()">Test Lens Effect</button>
+        <button onclick="showPerformanceMetrics()">Performance Report</button>
+        <button onclick="testScrollBehavior()">Test Scroll Behavior</button>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-canvas">
+            <div id="lottie-base"></div>
+            <div id="lottie-struct"></div>
+        </div>
+        
+        <div class="hero-poster"></div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">AI Education That Actually Makes Sense</h1>
+            <p class="hero-subtitle">Transform news into knowledge with our revolutionary learning accelerator</p>
+        </div>
+        
+        <button class="reveal-toggle" aria-pressed="false" aria-label="Reveal underlying structure">
+            Reveal Structure
+        </button>
+    </section>
+    
+    <!-- Content to test scroll behavior -->
+    <div class="content-below">
+        Scroll up to test intersection observer behavior
+    </div>
+
+    <script src="hero-lottie-test.js"></script>
+    
+    <!-- Test Functions -->
+    <script>
+        // Update performance info
+        function updateInfo() {
+            const controller = window.heroLottieController;
+            if (!controller) {
+                document.getElementById('performance-info').innerHTML = 'Controller not ready';
+                return;
+            }
+            
+            const metrics = controller.getPerformanceMetrics();
+            const connection = navigator.connection;
+            
+            document.getElementById('performance-info').innerHTML = `
+                Load Time: ${metrics.loadTime > 0 ? metrics.loadTime.toFixed(1) + 'ms' : 'Failed/Loading'}
+            `;
+            
+            document.getElementById('connection-info').innerHTML = `
+                Connection: ${connection?.effectiveType || 'unknown'} 
+                ${connection?.saveData ? '(save-data)' : ''}
+            `;
+            
+            document.getElementById('animation-status').innerHTML = `
+                Base: ${metrics.baseLoaded ? '✅' : '❌'} | Structure: ${metrics.structLoaded ? '✅' : '❌'}
+                <br>Combined: ${metrics.animationsLoaded ? '✅ Loaded' : '⏳ Loading'}
+                <br>Reduced Motion: ${metrics.isReduced ? '✅ On' : '❌ Off'}
+            `;
+        }
+        
+        // Test functions
+        function testReducedMotion() {
+            const mediaQuery = '(prefers-reduced-motion: reduce)';
+            const newValue = !matchMedia(mediaQuery).matches;
+            
+            // This is a simulation - actual reduced motion is a system setting
+            console.log(`Reduced motion would be: ${newValue ? 'ON' : 'OFF'}`);
+            alert('Reduced motion is a system setting. Check your browser/OS accessibility preferences.');
+        }
+        
+        function testLensInteraction() {
+            const struct = document.getElementById('lottie-struct');
+            if (struct) {
+                // Simulate lens effect
+                struct.style.setProperty('--mx', '50%');
+                struct.style.setProperty('--my', '50%');
+                struct.style.setProperty('--mr', '180px');
+                
+                setTimeout(() => {
+                    struct.style.setProperty('--mr', '0px');
+                }, 2000);
+                
+                console.log('🧪 Lens effect tested');
+            }
+        }
+        
+        function showPerformanceMetrics() {
+            const controller = window.heroLottieController;
+            if (controller) {
+                const metrics = controller.getPerformanceMetrics();
+                alert(JSON.stringify(metrics, null, 2));
+            }
+        }
+        
+        function testScrollBehavior() {
+            window.scrollTo({ 
+                top: document.body.scrollHeight, 
+                behavior: 'smooth' 
+            });
+            
+            setTimeout(() => {
+                window.scrollTo({ 
+                    top: 0, 
+                    behavior: 'smooth' 
+                });
+            }, 2000);
+        }
+        
+        // Update info periodically
+        setInterval(updateInfo, 1000);
+        setTimeout(updateInfo, 100);
+        
+        console.log('🧪 Test page loaded. Check console for Lottie loading messages.');
+    </script>
+</body>
+</html>

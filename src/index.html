@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Turn AI confusion into clarity. Learn AI concepts through plain language explanations, practical examples, and a 150+ term dictionary. Start anywhere, no prerequisites.">
+    <meta name="keywords" content="AI education, machine learning, artificial intelligence, educational platform, research, analysis">
+    <meta name="robots" content="index, follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Legal Meta Tags -->
+    <meta name="disclaimer" content="Educational use only. No official partnerships or endorsements implied.">
+    <meta name="attribution" content="AI system names used for educational and comparative analysis purposes under fair use.">
+    <title>ReasonPath™ - AI-Powered Learning Platform</title>
+
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/inline.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="nav">
+            <div class="logo">ReasonPath™</div>
+            <ul class="nav-links">
+                <li><a href="#" class="nav-link active" data-page="home">HOME</a></li>
+                <li><a href="#" class="nav-link" data-page="academy">ACADEMY</a></li>
+                <li><a href="#" class="nav-link" data-page="labs">LABS</a></li>
+                <li><a href="#" class="nav-link" data-page="ai-glossary">AI GLOSSARY</a></li>
+                <li><a href="#" class="nav-link" data-page="newsletter">NEWSLETTER</a></li>
+                <li><a href="#" class="nav-link" data-page="about">ABOUT</a></li>
+                <li><a href="#" class="nav-link" data-page="legal">LEGAL</a></li>
+            </ul>
+            
+            <div class="header-right">
+                <label for="main-search" class="sr-only">Search platform</label>
+                <input type="search" id="main-search" class="search-box" placeholder="Search platform...">
+                <button class="mobile-menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- Mobile Menu Overlay -->
+        <div class="mobile-menu-overlay"></div>
+        
+        <!-- Mobile Menu Panel -->
+        <nav class="mobile-menu" role="navigation" aria-label="Mobile navigation">
+            <!-- Mobile menu content remains the same -->
+        </nav>
+    </header>
+
+    <main class="main">
+        <!-- HOME PAGE -->
+        <section id="home" class="page-section active">
+            <!-- Home page content remains the same -->
+        </section>
+
+        <!-- ACADEMY PAGE -->
+        <section id="academy" class="page-section">
+            <!-- Academy page content remains the same -->
+        </section>
+
+        <!-- LABS PAGE -->
+        <section id="labs" class="page-section">
+            <!-- Labs page content remains the same -->
+        </section>
+
+        <!-- AI GLOSSARY PAGE (Updated with Pagination) -->
+        <section id="ai-glossary" class="page-section">
+            <div class="frame">
+                <div class="frame-toolbar">
+                    <div class="frame-title">AI Glossary</div>
+                    <div class="frame-actions">
+                        <button class="frame-btn" data-action="reset-filters">Reset Filters</button>
+                        <button class="frame-btn" data-action="random-term">Random Term</button>
+                    </div>
+                </div>
+                <div class="frame-content">
+                    <h2>AI Glossary</h2>
+                    <p class="attribution-notice">150+ AI terms explained in plain English - navigate AI terminology with confidence</p>
+                    
+                    <!-- Search and Filter -->
+                    <div style="margin: 2rem 0; padding: 1.5rem; background: #f8fafc; border-radius: 8px;">
+                        <label for="dictionary-search" class="sr-only">Search AI glossary terms</label>
+                        <input type="search" id="dictionary-search" placeholder="Search terms..." style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                            <!-- Category filters remain the same -->
+                            <div id="results-count" style="font-size: 0.875rem; color: #64748b; min-width: 120px; text-align: right;">
+                                Loading...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dictionary Terms -->
+                    <div class="frame" style="margin-top: 2rem;">
+                        <div class="frame-toolbar">
+                            <div class="frame-title">Glossary Terms</div>
+                        </div>
+                        <div class="frame-content">
+                            <div id="dictionary-grid" class="dictionary-terms-grid">
+                                <!-- Terms will be rendered here by app.js -->
+                            </div>
+                            <!-- PAGINATION CONTROLS WILL BE RENDERED HERE -->
+                            <div id="pagination-controls"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- OTHER PAGES (Newsletter, Legal, About) -->
+        <section id="newsletter" class="page-section"> <!-- content... --> </section>
+        <section id="legal" class="page-section"> <!-- content... --> </section>
+        <section id="about" class="page-section"> <!-- content... --> </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <!-- Footer content remains the same -->
+    </footer>
+
+    <!-- Deferred script loading for performance -->
+    <script src="js/app.js" type="module" defer></script>
+
+</body>
+</html>

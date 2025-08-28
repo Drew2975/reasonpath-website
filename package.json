@@ -1,0 +1,15 @@
+{
+  "name": "reasonpath-hero-lottie",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "ReasonPath Hero Lottie Animation Integration",
+  "scripts": {
+    "validate-assets": "node scripts/check-lottie-size.mjs",
+    "pre-commit": "npm run validate-assets",
+    "test-server": "python test-server.py",
+    "test": "npm run validate-assets && echo Open http://localhost:8000/tests/hero-lottie-test.html"
+  },
+  "keywords": ["lottie", "animation", "performance"],
+  "author": "ReasonPath Team",
+  "license": "MIT"
+}

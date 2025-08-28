@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Lottie Test - Multiple Sources</title>
+    <link rel="stylesheet" href="../assets/css/hero-lottie.css">
+    <style>
+        body { margin: 0; font-family: system-ui; background: #f8f9fa; }
+        .debug-panel {
+            position: fixed; top: 10px; left: 10px; right: 10px;
+            background: rgba(0,0,0,0.9); color: #00ff00; padding: 15px;
+            border-radius: 8px; font-family: 'Courier New', monospace; font-size: 10px;
+            z-index: 2000; max-height: 400px; overflow-y: auto;
+        }
+        .debug-log { margin: 1px 0; }
+        .error { color: #ff4444; }
+        .success { color: #44ff44; }
+        .warning { color: #ffaa44; }
+        .test-controls {
+            position: fixed; bottom: 10px; right: 10px;
+            background: rgba(255,255,255,0.95); padding: 15px;
+            border-radius: 8px; z-index: 2000;
+        }
+        .test-controls button {
+            display: block; width: 100%; margin: 3px 0; padding: 6px;
+            border: 1px solid #ddd; border-radius: 4px; cursor: pointer;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-panel">
+        <h4>🚀 Ultimate Lottie Test - Multiple Sources</h4>
+        <div id="debug-log"></div>
+    </div>
+    
+    <div class="test-controls">
+        <h4>Tests</h4>
+        <button onclick="testAllSources()">Test All CDN Sources</button>
+        <button onclick="testWorkingAnimation()">Test with Working Library</button>
+        <button onclick="testFallback()">Test Local Fallback</button>
+        <button onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <section class="hero-section">
+        <div class="hero-canvas">
+            <div id="lottie-base"></div>
+            <div id="lottie-struct"></div>
+        </div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">Ultimate Lottie Test</h1>
+            <p class="hero-subtitle">Testing multiple Lottie sources...</p>
+        </div>
+        
+        <button class="reveal-toggle" onclick="testStructure()" aria-pressed="false">
+            Test Structure (We Know This Works)
+        </button>
+    </section>
+
+    <script>
+        const debugLog = document.getElementById('debug-log');
+        let logCount = 0;
+        let workingLottie = null;
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.className = `debug-log ${type}`;
+            div.innerHTML = `[${timestamp}] ${message}`;
+            debugLog.appendChild(div);
+            debugLog.scrollTop = debugLog.scrollHeight;
+            console.log(`[${type.toUpperCase()}] ${message}`);
+            
+            if (++logCount > 100) {
+                debugLog.removeChild(debugLog.firstChild);
+                logCount--;
+            }
+        }
+
+        function clearLog() {
+            debugLog.innerHTML = '';
+            logCount = 0;
+        }
+
+        // Multiple CDN sources to test
+        const lottieSources = [
+            {
+                name: 'UNPKG Standard',
+                url: 'https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js',
+                type: 'full'
+            },
+            {
+                name: 'UNPKG Light (Current)',
+                url: 'https://unpkg.com/lottie-web/build/player/lottie_light.min.js',
+                type: 'light'
+            },
+            {
+                name: 'JSDelivr Full',
+                url: 'https://cdn.jsdelivr.net/npm/lottie-web@5.12.2/build/player/lottie.min.js',
+                type: 'full'
+            },
+            {
+                name: 'JSDelivr Light',
+                url: 'https://cdn.jsdelivr.net/npm/lottie-web@5.12.2/build/player/lottie_light.min.js',
+                type: 'light'
+            },
+            {
+                name: 'CDNJS',
+                url: 'https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js',
+                type: 'full'
+            }
+        ];
+
+        // Test all CDN sources
+        async function testAllSources() {
+            log('🚀 Testing all Lottie CDN sources...', 'info');
+            
+            for (const source of lottieSources) {
+                log(`📦 Testing ${source.name}...`, 'info');
+                
+                try {
+                    // Clear any previous modules from cache
+                    const moduleUrl = source.url + '?t=' + Date.now();
+                    
+                    const lottieModule = await import(moduleUrl);
+                    log(`  ✅ Import successful: ${typeof lottieModule}`, 'success');
+                    
+                    // Check module structure
+                    const keys = Object.keys(lottieModule);
+                    log(`  📋 Keys (${keys.length}): ${keys.slice(0, 5).join(', ')}${keys.length > 5 ? '...' : ''}`, 'info');
+                    
+                    // Try to find lottie object
+                    let lottie = null;
+                    
+                    // Pattern 1: Direct access
+                    if (typeof lottieModule.loadAnimation === 'function') {
+                        lottie = lottieModule;
+                        log(`  ✅ Direct access works!`, 'success');
+                    }
+                    // Pattern 2: Default export
+                    else if (lottieModule.default && typeof lottieModule.default.loadAnimation === 'function') {
+                        lottie = lottieModule.default;
+                        log(`  ✅ Default export works!`, 'success');
+                    }
+                    // Pattern 3: Check common properties
+                    else if (lottieModule.lottie && typeof lottieModule.lottie.loadAnimation === 'function') {
+                        lottie = lottieModule.lottie;
+                        log(`  ✅ Found in .lottie property!`, 'success');
+                    }
+                    // Pattern 4: Global window check (for traditional scripts)
+                    else if (typeof window.lottie !== 'undefined' && typeof window.lottie.loadAnimation === 'function') {
+                        lottie = window.lottie;
+                        log(`  ✅ Found in window.lottie!`, 'success');
+                    }
+                    
+                    if (lottie) {
+                        log(`  🎬 ${source.name} is WORKING! Saving as backup...`, 'success');
+                        workingLottie = lottie;
+                        
+                        // Test a quick animation creation
+                        const testContainer = document.createElement('div');
+                        testContainer.style.width = '100px';
+                        testContainer.style.height = '100px';
+                        testContainer.style.position = 'absolute';
+                        testContainer.style.top = '-200px';
+                        document.body.appendChild(testContainer);
+                        
+                        try {
+                            const testAnim = lottie.loadAnimation({
+                                container: testContainer,
+                                renderer: 'svg',
+                                loop: false,
+                                autoplay: false,
+                                animationData: {
+                                    "v": "5.7.4",
+                                    "fr": 30,
+                                    "ip": 0,
+                                    "op": 30,
+                                    "w": 100,
+                                    "h": 100,
+                                    "nm": "test",
+                                    "ddd": 0,
+                                    "assets": [],
+                                    "layers": [{
+                                        "ddd": 0,
+                                        "ind": 1,
+                                        "ty": 1,
+                                        "nm": "test",
+                                        "sr": 1,
+                                        "ks": {},
+                                        "ao": 0,
+                                        "sw": 100,
+                                        "sh": 100,
+                                        "sc": "#ff0000",
+                                        "ip": 0,
+                                        "op": 30
+                                    }]
+                                }
+                            });
+                            
+                            if (testAnim) {
+                                log(`  ✅ ${source.name} can create animations!`, 'success');
+                                return source; // Return first working source
+                            }
+                            
+                        } catch (animError) {
+                            log(`  ⚠️ ${source.name} loads but animation creation failed: ${animError.message}`, 'warning');
+                        } finally {
+                            document.body.removeChild(testContainer);
+                        }
+                    } else {
+                        log(`  ❌ ${source.name} - No loadAnimation method found`, 'error');
+                    }
+                    
+                } catch (error) {
+                    log(`  ❌ ${source.name} failed: ${error.message}`, 'error');
+                }
+                
+                log('  ───────────────────', 'info');
+            }
+            
+            if (workingLottie) {
+                log('🎉 Found working Lottie library! Ready to test full animation.', 'success');
+            } else {
+                log('❌ No working Lottie sources found. Will try fallback approach.', 'error');
+            }
+        }
+
+        // Test with the working library
+        async function testWorkingAnimation() {
+            if (!workingLottie) {
+                log('❌ No working Lottie library available. Run "Test All CDN Sources" first.', 'error');
+                return;
+            }
+            
+            log('🎬 Testing full animation with working library...', 'info');
+            
+            try {
+                // Load our actual JSON file
+                const response = await fetch('../assets/lottie/hero-glassbox.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const animationData = await response.json();
+                log(`📊 Animation data loaded: ${animationData.layers?.length || 0} layers`, 'success');
+                
+                // Clear container
+                const container = document.getElementById('lottie-base');
+                container.innerHTML = '';
+                
+                // Create animation
+                const animation = workingLottie.loadAnimation({
+                    container: container,
+                    renderer: 'svg',
+                    loop: true,
+                    autoplay: true,
+                    animationData: animationData
+                });
+                
+                // Check result
+                setTimeout(() => {
+                    const svg = container.querySelector('svg');
+                    if (svg) {
+                        log('🎉 SUCCESS! Full hero animation is now working!', 'success');
+                        svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+                        
+                        // Make it visible and styled
+                        svg.style.width = '100%';
+                        svg.style.height = '100%';
+                        
+                        window.heroAnimation = animation;
+                        
+                    } else {
+                        log('❌ Animation created but no SVG in DOM', 'error');
+                    }
+                }, 1000);
+                
+            } catch (error) {
+                log(`❌ Animation test failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Fallback approach using script tag
+        async function testFallback() {
+            log('🔄 Testing fallback script tag approach...', 'info');
+            
+            // Remove any existing lottie script
+            const existingScript = document.querySelector('script[src*="lottie"]');
+            if (existingScript) {
+                existingScript.remove();
+            }
+            
+            return new Promise((resolve) => {
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js';
+                script.onload = () => {
+                    log('✅ Script tag loaded', 'success');
+                    
+                    if (typeof window.lottie !== 'undefined') {
+                        log('✅ window.lottie is available!', 'success');
+                        workingLottie = window.lottie;
+                        resolve(window.lottie);
+                    } else {
+                        log('❌ window.lottie not found after script load', 'error');
+                        resolve(null);
+                    }
+                };
+                script.onerror = () => {
+                    log('❌ Script tag failed to load', 'error');
+                    resolve(null);
+                };
+                document.head.appendChild(script);
+            });
+        }
+
+        // Test structure (we know this works)
+        function testStructure() {
+            log('👁️ Testing structure reveal (known working)...', 'info');
+            
+            const struct = document.getElementById('lottie-struct');
+            const pressed = document.querySelector('.reveal-toggle').getAttribute('aria-pressed') === 'true';
+            
+            document.querySelector('.reveal-toggle').setAttribute('aria-pressed', String(!pressed));
+            
+            struct.style.setProperty('--mx', '50%');
+            struct.style.setProperty('--my', '50%');
+            struct.style.setProperty('--mr', pressed ? '0px' : '200px');
+            
+            log(`✅ Structure ${pressed ? 'hidden' : 'revealed'} (${pressed ? '0' : '200'}px radius)`, 'success');
+            
+            // Auto-hide after 3 seconds
+            if (!pressed) {
+                setTimeout(() => {
+                    struct.style.setProperty('--mr', '0px');
+                    document.querySelector('.reveal-toggle').setAttribute('aria-pressed', 'false');
+                    log('🔄 Structure auto-hidden', 'info');
+                }, 3000);
+            }
+        }
+
+        // Auto-start testing
+        document.addEventListener('DOMContentLoaded', () => {
+            log('🎯 Ultimate Lottie Test ready!', 'success');
+            log('👆 Click "Test All CDN Sources" to begin comprehensive testing', 'info');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReasonPath™ - Final Working Version</title>
+    <link rel="stylesheet" href="assets/css/master.css">
+    <style>
+        .hero-section {
+            position: relative;
+            min-height: 60vh;
+            background: #F8F9FA;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .hero-canvas {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+        #lottie-base {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 2rem;
+            max-width: 800px;
+        }
+        .hero-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 1rem;
+        }
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            color: #6c757d;
+            margin-bottom: 2rem;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: #00407A;
+            color: white;
+        }
+        .btn-secondary {
+            background: #E55A00;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">ReasonPath™</div>
+            <ul class="nav-links">
+                <li><a href="#" class="nav-link active">HOME</a></li>
+                <li><a href="#" class="nav-link">ACADEMY</a></li>
+                <li><a href="#" class="nav-link">LABS</a></li>
+                <li><a href="#" class="nav-link">AI GLOSSARY</a></li>
+                <li><a href="#" class="nav-link">NEWSLETTER</a></li>
+                <li><a href="#" class="nav-link">ABOUT</a></li>
+                <li><a href="#" class="nav-link">LEGAL</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="hero-canvas">
+                <div id="lottie-base"></div>
+            </div>
+            
+            <div class="hero-content">
+                <h1 class="hero-title">Curious about AI? You're in the right place.</h1>
+                <p class="hero-subtitle">Turn AI confusion into clarity. We break down complex concepts into ideas you can grasp, build on, and actually use.</p>
+                <div class="hero-buttons">
+                    <a href="#" class="btn btn-primary">Start Learning</a>
+                    <a href="#" class="btn btn-secondary">Browse AI Glossary</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
+    <script>
+        // Simple, direct approach
+        window.addEventListener('load', async () => {
+            console.log('Loading animation...');
+            
+            if (!window.lottie) {
+                console.error('Lottie not loaded');
+                return;
+            }
+            
+            try {
+                const response = await fetch('assets/lottie/hero-glassbox.json');
+                const animationData = await response.json();
+                
+                const animation = window.lottie.loadAnimation({
+                    container: document.getElementById('lottie-base'),
+                    renderer: 'svg',
+                    loop: true,
+                    autoplay: true,
+                    animationData: animationData
+                });
+                
+                console.log('Animation loaded successfully');
+                
+                // Ensure SVG is visible
+                setTimeout(() => {
+                    const svg = document.querySelector('#lottie-base svg');
+                    if (svg) {
+                        svg.style.width = '100%';
+                        svg.style.height = '100%';
+                        svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+                        console.log('Animation is now visible');
+                    }
+                }, 500);
+                
+            } catch (error) {
+                console.error('Animation failed:', error);
+            }
+        });
+    </script>
+</body>
+</html>

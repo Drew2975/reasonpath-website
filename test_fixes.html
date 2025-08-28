@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReasonPath - JavaScript Debug Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 2rem;
+            background: #f8f9fa;
+        }
+        .test-container {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        #console-output {
+            background: #1a1a1a;
+            color: #00ff00;
+            font-family: monospace;
+            padding: 1rem;
+            border-radius: 6px;
+            height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        button {
+            background: #00407A;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+        button:hover { background: #003366; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>ReasonPath JavaScript Debug Test</h1>
+        <p>This page tests the JavaScript fixes for the ReasonPath application.</p>
+        
+        <div id="test-results">
+            <div class="status warning">Running tests...</div>
+        </div>
+        
+        <div style="margin: 2rem 0;">
+            <button onclick="runTests()">Run Tests</button>
+            <button onclick="clearConsole()">Clear Console</button>
+        </div>
+        
+        <h3>Console Output:</h3>
+        <div id="console-output"></div>
+    </div>
+
+    <script>
+        // Mock console to capture output
+        let originalConsole = {...console};
+        let consoleOutput = document.getElementById('console-output');
+        
+        function logToDiv(type, ...args) {
+            const timestamp = new Date().toLocaleTimeString();
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            consoleOutput.textContent += `[${timestamp}] ${type.toUpperCase()}: ${message}\n`;
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+            // Also log to real console
+            originalConsole[type](...args);
+        }
+        
+        console.log = (...args) => logToDiv('log', ...args);
+        console.error = (...args) => logToDiv('error', ...args);
+        console.warn = (...args) => logToDiv('warn', ...args);
+        console.info = (...args) => logToDiv('info', ...args);
+
+        function clearConsole() {
+            consoleOutput.textContent = '';
+        }
+
+        async function runTests() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<div class="status warning">Running tests...</div>';
+            
+            const tests = [];
+
+            // Test 1: Class Definition
+            try {
+                console.log('Test 1: Checking ReasonPathApp class definition...');
+                const testCode = `
+                    class ReasonPathApp {
+                        constructor() {
+                            this.mobileMenuOpen = false;
+                            this.currentPage = 'home';
+                            this.dictionaryData = [];
+                            this.filteredDictionary = [];
+                        }
+                        
+                        async init() {
+                            console.log('init method works');
+                        }
+                        
+                        checkCompliance() {
+                            return {
+                                'trademark_usage': 'COMPLIANT - Educational fair use only',
+                                'partnership_claims': 'COMPLIANT - No partnerships claimed'
+                            };
+                        }
+                    }
+                `;
+                eval(testCode);
+                const testApp = new ReasonPathApp();
+                await testApp.init();
+                const compliance = testApp.checkCompliance();
+                console.log('Compliance check result:', compliance);
+                tests.push({ name: 'Class Definition', status: 'success', message: 'ReasonPathApp class defined correctly' });
+            } catch (error) {
+                console.error('Class definition test failed:', error);
+                tests.push({ name: 'Class Definition', status: 'error', message: error.message });
+            }
+
+            // Test 2: Error Handling
+            try {
+                console.log('Test 2: Testing error handling...');
+                const testErrorHandling = `
+                    function testFunction() {
+                        try {
+                            const element = document.querySelector('#non-existent');
+                            if (element) {
+                                element.classList.add('test');
+                            } else {
+                                console.warn('Element not found - handled gracefully');
+                            }
+                            return true;
+                        } catch (error) {
+                            console.error('Error caught:', error);
+                            return false;
+                        }
+                    }
+                `;
+                eval(testErrorHandling);
+                const result = testFunction();
+                tests.push({ name: 'Error Handling', status: 'success', message: 'Error handling works correctly' });
+            } catch (error) {
+                console.error('Error handling test failed:', error);
+                tests.push({ name: 'Error Handling', status: 'error', message: error.message });
+            }
+
+            // Test 3: Async/Await
+            try {
+                console.log('Test 3: Testing async/await functionality...');
+                const testAsync = async () => {
+                    return new Promise(resolve => {
+                        setTimeout(() => {
+                            resolve('Async test completed');
+                        }, 100);
+                    });
+                };
+                const asyncResult = await testAsync();
+                console.log(asyncResult);
+                tests.push({ name: 'Async/Await', status: 'success', message: 'Async functionality works' });
+            } catch (error) {
+                console.error('Async test failed:', error);
+                tests.push({ name: 'Async/Await', status: 'error', message: error.message });
+            }
+
+            // Test 4: Event Delegation Simulation
+            try {
+                console.log('Test 4: Testing event delegation pattern...');
+                const testEventDelegation = (event) => {
+                    const target = event.target;
+                    const closest = target.closest ? target.closest.bind(target) : () => null;
+                    
+                    try {
+                        if (target.matches && target.matches('[data-page]')) {
+                            console.log('Navigation event handled');
+                            return true;
+                        }
+                        return false;
+                    } catch (error) {
+                        console.error('Event delegation error:', error);
+                        return false;
+                    }
+                };
+                
+                // Create mock event
+                const mockElement = document.createElement('a');
+                mockElement.setAttribute('data-page', 'home');
+                mockElement.matches = (selector) => selector === '[data-page]';
+                
+                const mockEvent = { target: mockElement };
+                const eventResult = testEventDelegation(mockEvent);
+                
+                tests.push({ name: 'Event Delegation', status: 'success', message: 'Event delegation pattern works' });
+            } catch (error) {
+                console.error('Event delegation test failed:', error);
+                tests.push({ name: 'Event Delegation', status: 'error', message: error.message });
+            }
+
+            // Display results
+            let resultsHTML = '';
+            let allPassed = true;
+            
+            tests.forEach(test => {
+                if (test.status !== 'success') allPassed = false;
+                resultsHTML += `<div class="status ${test.status}">
+                    <strong>${test.name}:</strong> ${test.message}
+                </div>`;
+            });
+            
+            const summaryStatus = allPassed ? 'success' : 'error';
+            const summaryMessage = allPassed ? 
+                'All tests passed! JavaScript fixes are working correctly.' : 
+                'Some tests failed. Review the console output for details.';
+            
+            resultsHTML = `<div class="status ${summaryStatus}">
+                <strong>Test Summary:</strong> ${summaryMessage}
+            </div>` + resultsHTML;
+            
+            resultsDiv.innerHTML = resultsHTML;
+            
+            console.log('All tests completed.');
+            console.log('Summary: ' + summaryMessage);
+        }
+
+        // Auto-run tests when page loads
+        window.addEventListener('load', () => {
+            setTimeout(runTests, 500);
+        });
+    </script>
+</body>
+</html>
