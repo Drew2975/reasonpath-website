@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Direct Lottie Test</title>
-    <link rel="stylesheet" href="assets/css/hero-lottie.css">
+    <link rel="stylesheet" href="../assets/css/hero-lottie.css">
 </head>
 <body>
     <section class="hero-section">
@@ -35,7 +35,7 @@
             if (window.lottie) {
                 try {
                     // Load the JSON directly
-                    const response = await fetch('assets/lottie/hero-glassbox.json');
+                    const response = await fetch('../assets/lottie/hero-glassbox.json');
                     const animData = await response.json();
                     console.log('Animation data loaded:', animData.layers.length, 'layers');
                     

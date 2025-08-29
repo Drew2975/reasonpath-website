@@ -203,3 +203,46 @@ Created a comprehensive test file (`test_fixes.html`) that validates:
 
 ---
 *Debug session completed successfully. All critical JavaScript runtime and initialization issues have been resolved.*
+# Hero Lottie: Safe Removal Analysis (Quarantine Plan)
+
+Objective
+- Safely retire the hero Lottie feature without breaking tooling, tests, or other pages.
+
+Summary
+- Hero Lottie is not active on the homepage (no containers or script included).
+- If re-enabled, the CSP (`script-src 'self' 'unsafe-inline'`) would block the CDN `unpkg.com` load.
+- Removal impacts the asset-budget tooling; plan needed to keep hooks/tests green.
+
+Inventory
+- Code: `assets/js/hero-lottie.js` (injects lottie-web from CDN; fetches two JSONs).
+- Styles: `assets/css/hero-lottie.css` (containers, lens mask, poster fallback).
+- Assets: `assets/lottie/hero-glassbox.json`, `assets/lottie/hero-structure.json`, optional poster.
+- Tests/demos: pages in `tests/` and `archive_cleanup/`.
+- Tooling: `package.json` runs `scripts/check-lottie-size.mjs` in `validate-assets` (pre-commit + test).
+
+Risks
+- Deleting assets without changing the checker breaks `pre-commit` and `npm test`.
+- Absolute `/assets/...` paths would 404 under subpath hosting (not currently affecting homepage).
+
+Options Compared
+- Soft-Disable: leave files; don’t include on prod pages. Zero churn; repo remains cluttered.
+- Quarantine (recommended): move files into `archive/hero-lottie/` and make the checker tolerant; preserves demos; avoids tool breakage; keeps CSP strict.
+- Full Removal: delete all Lottie resources and update scripts/docs; highest impact.
+
+Decision
+- Adopt Quarantine with tolerant asset check.
+
+Actions Implemented
+- Tooling: make `scripts/check-lottie-size.mjs` skip checks when assets are missing (archived/disabled).
+- Docs: add archived feature notice to `AGENTS.md`; add README under `archive/hero-lottie/`.
+- Scripts: update `package.json` test hint to archived path.
+- File Moves (to `archive/hero-lottie/`): code, styles, JSON assets, tests, and historical demos consolidated.
+- Demo Path Fixes: updated archived demo HTML to use `../assets/...` relative paths.
+
+Non-Goals
+- Do not loosen CSP; do not re-enable hero on homepage.
+
+Reactivation Outline
+1) Move `archive/hero-lottie/assets/lottie/*` back to `assets/lottie/`.
+2) Include `assets/js/hero-lottie.js` and hero containers on the target page.
+3) Decide on CSP vs vendoring for `lottie-web`.

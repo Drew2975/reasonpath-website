@@ -40,3 +40,9 @@
 - Launch session: `codex -m gpt-5 -c model_reasoning_effort=high` from `Desktop/website`.
 - Use inline runs for quick tasks; keep changes minimal and focused.
 - If the CLI isn’t installed, follow its install docs, then rerun the command above.
+
+## Archived Feature Notice
+- The hero Lottie implementation has been archived and is not active on the site.
+- Archived files live under `archive/hero-lottie/` (assets, controller, styles, demo/tests).
+- Asset budget checks (`npm run validate-assets`) are tolerant and skip when Lottie assets are absent.
+- To reactivate, restore assets to `assets/lottie/`, include the controller on the target page, and review CSP policy.
